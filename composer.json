@@ -1,0 +1,14 @@
+{
+    "name": "jedlynch/probate",
+    "authors": [
+        {
+            "name": "Jed Lynch",
+            "email": "jedlynch@gmail.com"
+        }
+    ],
+    "require": {
+		"smalot/pdfparser": "*",
+		"itbz/fpdi": "*",
+		"thiagoalessio/tesseract_ocr": "*"
+    }
+}
