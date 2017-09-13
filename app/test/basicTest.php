@@ -25,10 +25,23 @@ echo getcwd();
 	public function testCode(){
 
 		require_once("parseRecords.php");
-
 		#$file = "build.pdf";
 		#$P =  new parse($file);
-		#$this->assertTrue(1==1,"test");
+
+		$test = str_getcsv(file_get_contents(__DIR__."/../build_out.csv"));
+var_dump($csv);
+		/*$test = true;
+		foreach(self::$contol as $docket => $control){
+			$test = true;
+			foreach($control as $field => $value){
+				if($data[$field] != $value){
+					$test = false;
+					break;
+				}
+			}
+		}
+
+		$this->assertTrue($test,"All the fields and values should match.");*/
 	}
 
 }

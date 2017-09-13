@@ -471,28 +471,32 @@ Class addressParser extends textParser{
 		$result  = strtolower($this->result);
 		$cityQ = array();
 		
-		$city = $this->zip[$zip]['city'];
-		$cityString = $this->zip[$zip]['city2'];
-		$cities = explode(",",$cityString);
-		$cities[count($cities)] = $city;
-		
-		//echo "<br><br>Curent String--->{$result}<br>";
-		foreach($cities as $i => $city){
-			$city = strtolower($city);
-			$city = str_replace($endings, "",$city);
-			//echo "<br>City: {$this->proper($city)}<br>";
-			$j=0;
-			if(stripos($result,$city ) != false){
-				$cityQ[$j++] = $this->proper($city);
+		if(isset($this->zip[$zip]['city'])){
+			$city = $this->zip[$zip]['city'];
+			$cityString = $this->zip[$zip]['city2'];
+			$cities = explode(",",$cityString);
+			$cities[count($cities)] = $city;
+			
+			//echo "<br><br>Curent String--->{$result}<br>";
+			foreach($cities as $i => $city){
+				$city = strtolower($city);
+				$city = str_replace($endings, "",$city);
+				//echo "<br>City: {$this->proper($city)}<br>";
+				$j=0;
+				if(stripos($result,$city ) != false){
+					$cityQ[$j++] = $this->proper($city);
+				}
+			}
+			
+			//print_r($cityQ);
+			if(count($cityQ) == 1){
+				return $cityQ[0];
+			}else{
+				return -1;
 			}
 		}
-		
-		//print_r($cityQ);
-		if(count($cityQ) == 1){
-			return $cityQ[0];
-		}else{
-			return -1;
-		}
+
+		return -1;
 	}
 	
 	public function cityFinderLevel3($state, $ZIP){

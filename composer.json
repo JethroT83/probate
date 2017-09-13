@@ -9,7 +9,7 @@
     "require": {
 		"smalot/pdfparser": "*",
 		"itbz/fpdi": "*",
-		"thiagoalessio/tesseract_ocr": "*",
+        "thiagoalessio/tesseract_ocr": "*",
         "phpunit/phpunit": "^5.7",
         "phpunit/php-code-coverage": "^4.0"
     }

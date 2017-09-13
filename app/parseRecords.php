@@ -11,14 +11,6 @@ ini_set('memory_limit','2048M');
 Class parse extends global_ {
 
 	public function __construct($file){	
-		/*$this->masterFile = $file;
-		$this->masterFileName = substr($file,0,strlen($file)-4);
-		$this->PDF = new \fpdi\FPDI();
-		#echo "dir-->".getcwd()."-isfile-->".is_file($file);
-		#$this->PDF->getLastUsedPageBox();
-		$this->pageCount = $this->PDF->setSourceFile($file);
-		$this->pdfFiles = array();
-		#$this->onController();*/
 
 		$this->masterFile = $file;
 		$this->masterFileName = substr($file,0,strlen($file)-4);
@@ -74,12 +66,17 @@ Class parse extends global_ {
 	}
 	
 	public function readJPG($imageFile){
-		$this->OCR = new TesseractOCR($imageFile);
-		$this->OCR->setTempDir(__DIR__);
-		$this->OCR->setLanguage('eng');
-		//$this->OCR->setWhitelist(range(0,9));
-		$text = $this->OCR->recognize();
-		var_dump($text);
+#echo "\n\n-".__LINE__."--imageFile-->".$imageFile;
+		(new TesseractOCR($imageFile))
+			->lang('eng')
+			#->tessdataDir(__DIR__)
+			->run();
+		#$OCR->tessdataDir(__DIR__);
+		#$OCR->lang('eng');
+		//$this->OCR->setWhitelist(range(0,9));		
+		#return echo ($OCR->run());
+		$text = trim(file_get_contents(__DIR__."/stdout.txt"));
+		unlink("stdout.txt");
 	    return $text;
 
 	}
@@ -103,7 +100,7 @@ Class parse extends global_ {
 
 	public function onController(){
 			$this->getZip();
-			echo "This is page count -->". $this->pageCount;
+			echo "\n\nThis is page count -->". $this->pageCount;
 		for($page=1;$page<=$this->pageCount;$page++){
 			echo "<h2 style='color:red'>$page</h2>";
 			$pdfFile = $this->paginatePDF($page);
@@ -111,21 +108,14 @@ Class parse extends global_ {
 			echo "<h2 style='color:red'>This is the imageFile-->$imageFile</h2>";
 			$this->convertToJPG($pdfFile, $imageFile);
 			$text = $this->readJPG($imageFile);
+echo "\n\n".__LINE__."--text-->".json_encode($text,JSON_PRETTY_PRINT);
 			$out[$page] = $this->parse($text);
 			//if($page==3){break;}
 		}
-		/*var_dump($out);
-		$this->array_to_CSV($out,  $this->masterFileName . "_out" );*/
+echo "\n\n".__LINE__."--out-->".json_encode($out,JSON_PRETTY_PRINT);
+		$this->array_to_CSV($out,  $this->masterFileName . "_out" );
 	}
 }
 
 	$file = "build.pdf";
 	$P =  new parse($file);
-
-	#$file = "AUG2017_2.pdf";
-	#$P =  new parse($file);
-	
-	#$file = "MAR2017_2.pdf";
-	#$P =  new parse($file);
-	
-
