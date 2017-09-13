@@ -1,9 +1,9 @@
 <?php
-require_once("global.php");
+require_once(__DIR__."/global.php");
 //require_once("../vendor/autoload.php");
-require_once("../vendor/tesseract-ocr-for-php-master/TesseractOCR/TesseractOCR.php");
-require_once("../vendor/autoload.php");
-require_once("textParser.php");
+#require_once(__DIR__."/../vendor/tesseract-ocr-for-php-master/TesseractOCR/TesseractOCR.php");
+require_once(__DIR__."/../vendor/autoload.php");
+require_once(__DIR__."/textParser.php");
 set_time_limit(120000);
 ini_set('memory_limit','2048M');
 
@@ -11,6 +11,15 @@ ini_set('memory_limit','2048M');
 Class parse extends global_ {
 
 	public function __construct($file){	
+		/*$this->masterFile = $file;
+		$this->masterFileName = substr($file,0,strlen($file)-4);
+		$this->PDF = new \fpdi\FPDI();
+		#echo "dir-->".getcwd()."-isfile-->".is_file($file);
+		#$this->PDF->getLastUsedPageBox();
+		$this->pageCount = $this->PDF->setSourceFile($file);
+		$this->pdfFiles = array();
+		#$this->onController();*/
+
 		$this->masterFile = $file;
 		$this->masterFileName = substr($file,0,strlen($file)-4);
 		$this->PDF = new \fpdi\FPDI();
@@ -94,7 +103,7 @@ Class parse extends global_ {
 
 	public function onController(){
 			$this->getZip();
-			echo $this->pageCount;
+			echo "This is page count -->". $this->pageCount;
 		for($page=1;$page<=$this->pageCount;$page++){
 			echo "<h2 style='color:red'>$page</h2>";
 			$pdfFile = $this->paginatePDF($page);
@@ -105,12 +114,12 @@ Class parse extends global_ {
 			$out[$page] = $this->parse($text);
 			//if($page==3){break;}
 		}
-		var_dump($out);
-		$this->array_to_CSV($out,  $this->masterFileName . "_out" );
+		/*var_dump($out);
+		$this->array_to_CSV($out,  $this->masterFileName . "_out" );*/
 	}
 }
 
-	$file = "SEPT2017_3.pdf";
+	$file = "build.pdf";
 	$P =  new parse($file);
 
 	#$file = "AUG2017_2.pdf";
