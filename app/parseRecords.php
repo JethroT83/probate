@@ -4,14 +4,11 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once(__DIR__."/global.php");
-//require_once("../vendor/autoload.php");
-#require_once(__DIR__."/../vendor/tesseract-ocr-for-php-master/TesseractOCR/TesseractOCR.php");
 require_once(__DIR__."/../vendor/autoload.php");
 require_once(__DIR__."/textParser.php");
 set_time_limit(120000);
 ini_set('memory_limit','2048M');
 
-//https://github.com/thiagoalessio/tesseract-ocr-for-php
 Class parse extends global_ {
 
 	public function __construct($file){	
