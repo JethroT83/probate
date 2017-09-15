@@ -17,10 +17,10 @@ class configure{
 				$this->creds['key']	 	 = '';
 				break;
 			case 1:
-				$this->creds['server']   = 'localhost';
+				$this->creds['server']   = 'localhost:3307';
 				$this->creds['username'] = 'root';
 				$this->creds['password'] = '';
-				$this->creds['database'] = 'temp';
+				$this->creds['database'] = 'probate';
 				$this->creds['cart']	 = 1;
 				$this->creds['key']	 	 = '';
 				break;

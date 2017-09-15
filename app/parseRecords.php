@@ -39,24 +39,17 @@ Class parse extends global_ {
 		return $f;
 	}
 	
+	/*
+	#WINDOWS
 	public function convertToJPG($pdfFile, $nameTo){
-		//$location   = "C:\Program Files\ImageMagick-6.9.1-Q16"; // Binaries Location
-		//$location   = "convert";
-		//$convert    = $location . " " . $pdfFile . " ".$nameTo; // Command creating
-		//echo "<h1>This is convert---->$convert</h1>";
-		
+
 		$s = trim("\ ");
 		
 		$convert =  "cd \ &&";//
 		$convert .=  "cd Program Files\gs\gs9.16\bin &&";
 		$convert .= "gswin32c.exe ";
-		//$convert .= "  -dMaxBitmap=500000000 ";
 		$convert .= "  -dGraphicsAlphaBits=4";
 		$convert .= "  -sDEVICE=jpeg ";
-		/*$convert .= " -dDEVICEWIDTHPOINTS=207 ";//413//826//1654
-		$convert .= " -dDEVICEHEIGHTPOINTS=292 ";//583//1167//2333
-		$convert .= " -dDEVICEXRESOLUTION=207 ";//413//826//1654
-		$convert .= " -dDEVICEYRESOLUTION=292 ";//583//1167//2333*/
 		$convert .= " -dDEVICEWIDTHPOINTS=413 ";//413//826//1654
 		$convert .= " -dDEVICEHEIGHTPOINTS=583 ";//583//1167//2333
 		$convert .= " -dDEVICEXRESOLUTION=413 ";//413//826//1654
@@ -65,28 +58,44 @@ Class parse extends global_ {
 		$convert .= __DIR__ .$s.$pdfFile;// "p1_APRIL2015_1.pdf"; //must have .pdf
 		$convert .= "  -c quit ;";
 		
-		echo $convert;
 		system($convert); // Execution of complete command.
+	}*/
+
+	#LINUX
+	public function convertToJPG($pdfFile, $nameTo){
+
+		$convert = "convert -density 413 -quality 100 ";
+		$convert.= $pdfFile ." ";
+		$convert.= $nameTo;
+echo "\n\n".__LINE__."--convert-->".$convert;
+		system($convert);
 	}
-	
+
+
+	/*
+	#WINDOWS
 	public function readJPG($imageFile){
-#echo "\n\n-".__LINE__."--imageFile-->".$imageFile;
+
 		(new TesseractOCR($imageFile))
 			->lang('eng')
-			#->tessdataDir(__DIR__)
 			->run();
-		#$OCR->tessdataDir(__DIR__);
-		#$OCR->lang('eng');
-		//$this->OCR->setWhitelist(range(0,9));		
-		#return echo ($OCR->run());
+
 		$text = trim(file_get_contents(__DIR__."/stdout.txt"));
 		unlink("stdout.txt");
 	    return $text;
 
-	}
+	}*/
 	
+	public function readJPG($imageFile){
+
+		return (new TesseractOCR($imageFile))
+			->lang('eng')
+			->run();
+	}
+
+
 	public function getZip(){
-		$get = "SELECT * FROM temp.zip";
+		$get = "SELECT * FROM probate.zip";
 		$this->read(1,$get, __FILE__, __LINE__);
 		
 		foreach($this->result as $i => $info){

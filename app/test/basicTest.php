@@ -24,7 +24,7 @@ class BasicTest extends PHPUnit_Framework_TestCase{
 
 	public function testCode(){
 
-		require_once("parseRecords.php");
+		#require_once("parseRecords.php");
 
 		$r = array_map('str_getcsv', file(__DIR__."/../build_out.csv"));
 		foreach( $r as $k => $d ) { $r[$k] = array_combine($r[0], $r[$k]); }
@@ -32,18 +32,22 @@ class BasicTest extends PHPUnit_Framework_TestCase{
 		foreach($csvData as $i => $row) {$csv[$row['Docket']] = $row;}
 
 		$test = true;
+		$tValue = "";
+		$cValue = "";
 		foreach(self::$control as $docket => $control){
 			$test = true;
 			foreach($control as $field => $value){
 				if($csv[$docket][$field] != $value){
 					$test = false;
 					$failedField = $field;
+					$cValue = $value;
+					$tValue = $csv[$docket][$field];
 					break;
 				}
 			}
 		}
 
-		$this->assertTrue($test,"Test failed with field " . $field .".");
+		$this->assertTrue($test,"Test failed with field " . $field .".  control-->" . $cValue . "--test-->".$tValue);
 	}
 
 }
