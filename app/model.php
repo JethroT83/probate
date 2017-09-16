@@ -1,6 +1,6 @@
 <?php
-
-Class global{
+namespace app{
+Class global_{
 	public $result;
 
 
@@ -463,6 +463,6 @@ if $t==1 then it will connect to the jstqi
 	}
 	
 }
-
+}
 
 ?>

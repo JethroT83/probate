@@ -1,15 +1,7 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+namespace app{
 
-require_once(__DIR__."/global.php");
-require_once(__DIR__."/../vendor/autoload.php");
-require_once(__DIR__."/textParser.php");
-set_time_limit(120000);
-ini_set('memory_limit','2048M');
-
-Class parse extends global_ {
+Class parse extends \app\global_ {
 
 	public function __construct($file){	
 
@@ -126,6 +118,4 @@ echo "\n\n".__LINE__."--out-->".json_encode($out,JSON_PRETTY_PRINT);
 		$this->array_to_CSV($out,  $this->masterFileName . "_out" );
 	}
 }
-
-	$file = "build.pdf";
-	$P =  new parse($file);
+}
