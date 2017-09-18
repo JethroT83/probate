@@ -1,6 +1,6 @@
 <?php
-
-class parseDeathDate extends textParser{
+namespace app\jobs{
+class parseDeathDate extends \app\providers\textParser{
 	public function __construct($text){
 		$this->text = $text;
 		$this->onController();
@@ -13,7 +13,7 @@ class parseDeathDate extends textParser{
 		$string = substr($this->text,$pos1,11);
 		$string = trim($string);
 		//echo "This is string-->". $string;
-		$D = new dateParser($string);
+		$D = new parseDate($string);
 		$r = $D->parseNoSpace();
 		//echo "<br>This is parse no space--->" . $r;
 		return $r;
@@ -28,7 +28,7 @@ class parseDeathDate extends textParser{
 	}
 	
 	public function parseLevel2(){
-		$D = new dateParser($this->result);
+		$D = new parseDate($this->result);
 		return $D->findEnd($this->result);
 	}
 
@@ -40,4 +40,5 @@ class parseDeathDate extends textParser{
 			$this->result = $this->parseLevel2();
 		}
 	}
+}
 }

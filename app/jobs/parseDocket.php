@@ -1,5 +1,6 @@
 <?php
-Class parseDocket extends textParser{
+namespace app\jobs{
+Class parseDocket extends \app\providers\textParser{
 
 	public function __construct($text){
 		$this->text = $text;
@@ -53,5 +54,6 @@ Class parseDocket extends textParser{
 			$this->result = $this->parseLevel2();
 		}
 	}
+}
 }
 ?>

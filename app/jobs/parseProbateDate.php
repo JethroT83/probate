@@ -1,6 +1,6 @@
 <?php
-
-class parseProbateDate extends textParser{
+namespace app\jobs{
+class parseProbateDate extends \app\providers\textParser{
 
 	public function __construct($text){
 		$this->text = $text;
@@ -17,12 +17,12 @@ class parseProbateDate extends textParser{
 	
 	
 	public function testLevel1(){
-		$D = new dateParser($this->result);
+		$D = new parseDate($this->result);
 		$testSpace =  $D->testSpace();
 	}
 	
 	public function parseLevel2(){
-		$D = new dateParser($this->result);
+		$D = new parseDate($this->result);
 		$result = $D->parseNoSpace();
 		return $D->findEnd($result);
 		
@@ -35,4 +35,5 @@ class parseProbateDate extends textParser{
 			$this->result = $this->parseLevel2();
 		}
 	}
+}
 }

@@ -1,5 +1,6 @@
 <?php
-class parseDate extends textParser{
+namespace app\jobs{
+class parseDate extends \app\providers\textParser{
 	public function __construct($result){
 		$this->result = $result;
 	}
@@ -40,4 +41,5 @@ class parseDate extends textParser{
 		}
 	}
 
+}
 }

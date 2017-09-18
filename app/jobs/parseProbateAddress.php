@@ -1,5 +1,6 @@
 <?php
-class parseProbateAddress extends textParser{
+namespace app\jobs{
+class parseProbateAddress extends \app\providers\textParser{
 	public function __construct($text, $zip){
 		$this->zip = $zip;
 		$this->text = $text;
@@ -87,4 +88,5 @@ class parseProbateAddress extends textParser{
 			}
 		}
 	}
+}
 }

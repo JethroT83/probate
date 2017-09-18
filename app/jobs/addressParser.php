@@ -1,6 +1,8 @@
 <?php
 
-Class addressParser extends textParser{
+namespace app\jobs{
+
+Class addressParser extends \app\providers\textParser{
 	public function __construct($result, $zip){
 		$this->zip = $zip;
 		$this->result = $result;
@@ -274,6 +276,6 @@ Class addressParser extends textParser{
 		}
 	}
 	
-	
+}
 	
 }

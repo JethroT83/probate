@@ -1,5 +1,6 @@
 <?php
-class parseDeceasedName extends textParser{
+namespace app\jobs{
+class parseDeceasedName extends \app\providers\textParser{
 
 	public function __construct($text){
 		$this->text = $text;
@@ -40,5 +41,5 @@ class parseDeceasedName extends textParser{
 		}
 	}
 }
-
+}
 ?>

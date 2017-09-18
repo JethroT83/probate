@@ -1,6 +1,6 @@
 <?php
-
-Class parseProbateName extends textParser{
+namespace app\jobs{
+Class parseProbateName extends \app\providers\textParser{
 	
 	public function __construct($text, $stop = "Exe"){
 		$this->text = $text;
@@ -44,5 +44,6 @@ Class parseProbateName extends textParser{
 			$this->result = $this->parseLevel2();
 		}*/
 	}
+}
 }
 ?>

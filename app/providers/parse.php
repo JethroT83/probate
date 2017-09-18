@@ -1,7 +1,7 @@
 <?php
-namespace app{
+namespace app\providers{
 
-Class parse extends \app\global_ {
+Class parse extends \app\model{
 
 	public function __construct($file){	
 
@@ -58,6 +58,7 @@ Class parse extends \app\global_ {
 		$convert.= $nameTo;
 echo "\n\n".__LINE__."--convert-->".$convert;
 		system($convert);
+		exec("sudo chmod 777 resources -R");
 	}
 
 
@@ -77,7 +78,7 @@ echo "\n\n".__LINE__."--convert-->".$convert;
 	
 	public function readJPG($imageFile){
 
-		return (new TesseractOCR($imageFile))
+		return (new \TesseractOCR($imageFile))
 			->lang('eng')
 			->run();
 	}
@@ -107,10 +108,11 @@ echo "\n\n".__LINE__."--convert-->".$convert;
 			echo "<h2 style='color:red'>$page</h2>";
 			$pdfFile = $this->paginatePDF($page);
 			$imageFile = "{$this->masterFileName}_p{$page}.jpg";
+echo "\n\n".__LINE__."--imageFile-->".json_encode($imageFile,JSON_PRETTY_PRINT)."\n\n";
 			echo "<h2 style='color:red'>This is the imageFile-->$imageFile</h2>";
 			$this->convertToJPG($pdfFile, $imageFile);
 			$text = $this->readJPG($imageFile);
-echo "\n\n".__LINE__."--text-->".json_encode($text,JSON_PRETTY_PRINT);
+echo "\n\n".__LINE__."--text-->".$text."\n\n";
 			$out[$page] = $this->parse($text);
 			//if($page==3){break;}
 		}

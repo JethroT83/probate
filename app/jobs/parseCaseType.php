@@ -1,6 +1,6 @@
 <?php
-
-Class parseCaseType extends textParser{
+namespace app\jobs{
+Class parseCaseType extends \app\providers\textParser{
 
 	public function __construct($text){
 		$this->caseTypes = array("PROBATE","NEXT OF KIN AFFIDAVIT", "SPOUSE AFFIDAVIT");
@@ -35,9 +35,9 @@ Class parseCaseType extends textParser{
 	}
 	
 	public function parseLevel2(){
-		$f = fopen("caseTypes_NotFound.txt","w");
-		fwrite($f,$this->result);
-		fclose($f);
+		#$f = fopen("caseTypes_NotFound.txt","w");
+		#fwrite($f,$this->result);
+		#fclose($f);
 	}
 
 	public function onController(){
@@ -48,5 +48,6 @@ Class parseCaseType extends textParser{
 		}
 	}
 
+}
 }
 ?>

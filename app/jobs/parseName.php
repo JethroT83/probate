@@ -1,5 +1,6 @@
 <?php
-class parseName extends textParser{
+namespace app\jobs{
+class parseName extends \app\providers\textParser{
 	public function __construct($result){
 		$this->result = trim($result);
 	}
@@ -53,5 +54,6 @@ class parseName extends textParser{
 		return -1;
 	}
 
+}
 }
 ?>

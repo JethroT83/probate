@@ -1,6 +1,6 @@
 <?php
 namespace app{
-Class global_{
+Class model{
 	public $result;
 
 

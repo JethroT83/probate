@@ -1,6 +1,6 @@
 <?php
 
-
+namespace app\providers{
 Class textParser{
 
 	public function __construct($text, $ZIP){
@@ -124,12 +124,12 @@ Class textParser{
 	
 
 	public function parseProbate($text){
-		$probateDate = new parseProbateDate($text);
-		$deathDate = new parseDeathDate($text);
-		$deceasedName = new parseDeceasedName($text);
-		$deceasedAddress = new parseDeceasedAddress($text, $this->zip);
-		$probateName = new parseProbateName($text);
-		$probateAddress = new parseProbateAddress($text, $this->zip);
+		$probateDate = new \app\jobs\parseProbateDate($text);
+		$deathDate = new \app\jobs\parseDeathDate($text);
+		$deceasedName = new \app\jobs\parseDeceasedName($text);
+		$deceasedAddress = new \app\jobs\parseDeceasedAddress($text, $this->zip);
+		$probateName = new \app\jobs\parseProbateName($text);
+		$probateAddress = new \app\jobs\parseProbateAddress($text, $this->zip);
 		
 
 		/*echo "<br><H1>ProbateDate:" . $probateDate->result . "</H1>";
@@ -168,12 +168,12 @@ Class textParser{
 	}
 	
 	public function parseNextofKin($text){
-		$probateDate = new parseProbateDate($text);
-		$deathDate = new parseDeathDate($text);
-		$deceasedName = new parseDeceasedName($text);
-		$deceasedAddress = new parseDeceasedAddress($text, $this->zip);
-		$probateName = new parseProbateName($text, "Af");	
-		$probateAddress = new parseProbateAddress($text, $this->zip);
+		$probateDate = new \app\jobs\parseProbateDate($text);
+		$deathDate = new \app\jobs\parseDeathDate($text);
+		$deceasedName = new \app\jobs\parseDeceasedName($text);
+		$deceasedAddress = new \app\jobs\parseDeceasedAddress($text, $this->zip);
+		$probateName = new \app\jobs\parseProbateName($text, "Af");	
+		$probateAddress = new \app\jobs\parseProbateAddress($text, $this->zip);
 		
 		/*echo "<br><H1>ProbateDate:" . $probateDate->result . "</H1>";
 		echo "<br><H1>DeathDate:" . $deathDate->result . "</H1>";
@@ -214,9 +214,9 @@ Class textParser{
 	
 	public function parseText(){
 		$text = $this->text;
-		$docket = new parseDocket($text);
+		$docket = new \app\jobs\parseDocket($text);
 				
-		$caseType = new parseCaseType($text);
+		$caseType = new \app\jobs\parseCaseType($text);
 			
 		echo "<br><H1>Docket:" . $docket->result . "</H1>";
 		echo "<br><H1>CaseType:" . $caseType->result . "</H1>";	
@@ -239,4 +239,5 @@ Class textParser{
 				break;
 		}	
 	}
+}
 }
