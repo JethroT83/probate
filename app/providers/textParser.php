@@ -131,26 +131,6 @@ Class textParser{
 		$probateName = new \app\jobs\parseProbateName($text);
 		$probateAddress = new \app\jobs\parseProbateAddress($text, $this->zip);
 		
-
-		/*echo "<br><H1>ProbateDate:" . $probateDate->result . "</H1>";
-		echo "<br><H1>DeathDate:" . $deathDate->result . "</H1>";
-		echo "<br><H1>DeceasedName:" . $deceasedName->result . "</H1>";
-		
-		$array = $deceasedAddress->result;
-		$deceasedString = "";
-		foreach($array as $i => $info){
-			$deceasedString .= $info;
-		}
-		echo "<br><H1>DeceasedAddress" . $deceasedString. "</H1>";
-		
-		echo "<br><H1>ProbateName: " . $probateName->result . "</H1>";
-		
-		$array = $probateAddress->result;
-		$probateString = "";
-		foreach($array as $i => $info){
-			$probateString .= $info;
-		}
-		echo "<br><H1>ProbateAddress" . $probateString . "</H1>";*/
 		$this->out['CaseType'] = $this->caseType;
 		$this->out['ProbateDate'] = $probateDate->result;
 		$this->out['DateofDeath'] = $deathDate->result;
