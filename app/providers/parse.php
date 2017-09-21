@@ -48,7 +48,7 @@ Class parse extends \app\model{
 
 	public function getZip(){
 		$get = "SELECT * FROM probate.zip";
-		$this->read(1,$get, __FILE__, __LINE__);
+		$this->result = $GLOBALS['connection']->select($get);
 		
 		foreach($this->result as $i => $info){
 			$this->zip[$info['zip']]['city'] = $info['primary_city'];

@@ -24,7 +24,7 @@ class BasicTest extends PHPUnit_Framework_TestCase{
 
 	public function testCode(){
 
-		#require_once("index.php");
+		require_once("index.php");
 
 		$r = array_map('str_getcsv', file(__DIR__."/../resources/build_out.csv"));
 		foreach( $r as $k => $d ) { $r[$k] = array_combine($r[0], $r[$k]); }
