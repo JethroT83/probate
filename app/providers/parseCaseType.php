@@ -1,6 +1,6 @@
 <?php
 namespace app\providers{
-Class parseCaseType extends \app\providers\textParser{
+Class parseCaseType extends \app\textParser{
 
 	public function __construct($text){
 		$this->caseTypes = array("PROBATE","NEXT OF KIN AFFIDAVIT", "SPOUSE AFFIDAVIT");

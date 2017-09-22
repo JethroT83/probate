@@ -1,5 +1,5 @@
 <?php
-namespace app\providers{
+namespace app{
 
 Class parse {
 

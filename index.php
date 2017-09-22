@@ -10,5 +10,5 @@ ini_set('memory_limit','2048M');
 require_once(__DIR__."/vendor/autoload.php");
 require_once(__DIR__."/bootstrap/db.php");
 
-$file = __DIR__."/resources/build.pdf";
-$P =  new \app\providers\parse($file);
+$file = __DIR__."/storage/build.pdf";
+$P =  new \app\parse($file);

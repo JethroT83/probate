@@ -1,6 +1,6 @@
 <?php
 namespace app\providers{
-class parseDate extends \app\providers\textParser{
+class parseDate extends \app\textParser{
 	public function __construct($result){
 		$this->result = $result;
 	}

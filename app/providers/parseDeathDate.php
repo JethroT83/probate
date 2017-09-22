@@ -1,6 +1,6 @@
 <?php
 namespace app\providers{
-class parseDeathDate extends \app\providers\textParser{
+class parseDeathDate extends \app\textParser{
 	public function __construct($text){
 		$this->text = $text;
 		$this->onController();

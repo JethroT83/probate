@@ -1,6 +1,6 @@
 <?php
 namespace app\providers{
-Class parseDocket extends \app\providers\textParser{
+Class parseDocket extends \app\textParser{
 
 	public function __construct($text){
 		$this->text = $text;

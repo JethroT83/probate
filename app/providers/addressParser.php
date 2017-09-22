@@ -2,7 +2,7 @@
 
 namespace app\providers{
 
-Class addressParser extends \app\providers\textParser{
+Class addressParser extends \app\textParser{
 	public function __construct($result, $zip){
 		$this->zip = $zip;
 		$this->result = $result;
