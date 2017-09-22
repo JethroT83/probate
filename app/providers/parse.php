@@ -1,7 +1,7 @@
 <?php
 namespace app\providers{
 
-Class parse extends \app\model{
+Class parse {
 
 	public function __construct($file){	
 
@@ -45,6 +45,19 @@ Class parse extends \app\model{
 			->run();
 	}
 
+
+	public function array_to_CSV($array, $filename){
+		$keys	=	array_keys($array[1]);
+		$f		=	fopen($filename.".csv" ,'w');
+		fputcsv ($f	 , $keys);
+		
+		foreach($array as $i => $info){
+			fputcsv ($f	 , $info);
+		}
+		
+		fclose($f);
+	}
+	
 
 	public function getZip(){
 		$get = "SELECT * FROM probate.zip";
