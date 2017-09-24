@@ -8,7 +8,7 @@ class parseProbateAddress extends \app\textParser{
 	}
 	
 	function parseLevel1(){
-		echo "<br>Probate Address1--->".$this->text;
+		#echo "<br>Probate Address1--->".$this->text;
 		//$pos = strpos($this->text,"Relation")+strlen("Relation");
 		$pos1 = $this->strposProbate($this->text,"Relation")+strlen("Relation");
 		//echo __LINE__ . ": " . $pos1 . " ----  " . $pos2;
@@ -61,7 +61,7 @@ class parseProbateAddress extends \app\textParser{
 	
 	public function parseLevel2(){
 		$AD = $this->AD;
-		echo "<H5 style='color:purple'>Probate Address Parse Level 2</H5>";
+		#echo "<H5 style='color:purple'>Probate Address Parse Level 2</H5>";
 		if($this->result['zip']  == -1){
 			$this->result['zip']   = $AD->zipFinderLevel2($this->result['state'], $this->zip);
 		}

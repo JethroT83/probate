@@ -198,8 +198,8 @@ Class textParser{
 				
 		$caseType = new \app\providers\parseCaseType($text);
 			
-		echo "<br><H1>Docket:" . $docket->result . "</H1>";
-		echo "<br><H1>CaseType:" . $caseType->result . "</H1>";	
+		#echo "<br><H1>Docket:" . $docket->result . "</H1>";
+		#echo "<br><H1>CaseType:" . $caseType->result . "</H1>";	
 		
 		$this->out['ProbateType'] = "val";
 		$this->out['Docket'] = $docket->result;

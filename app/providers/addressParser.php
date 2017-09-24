@@ -134,7 +134,7 @@ Class addressParser extends \app\textParser{
 			return $array;
 		};
 		
-		echo "<H5 style='color:purple'>This is ZIP check" .  count($ZIP) , "</H5>";
+		#echo "<H5 style='color:purple'>This is ZIP check" .  count($ZIP) , "</H5>";
 		
 		foreach($ZIP as $z => $info){
 			if(strtolower($state) == strtolower($info['state'])){
@@ -183,10 +183,10 @@ Class addressParser extends \app\textParser{
 			}
 		}
 		//print_r($matches);
-		if(count($matches == 1)){
+		if(count($matches)==1){
 			return $matches[0];
 		}else{
-			echo "no matches found.";
+			#echo "no matches found.";
 			return -1;
 		}
 	}
