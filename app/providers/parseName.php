@@ -5,6 +5,21 @@ class parseName extends \app\textParser{
 		$this->result = trim($result);
 	}
 	
+
+	public static function findName($line){
+		foreach(self::$name as $id => $name){
+
+			$r = self::compare($line,$name);
+
+			if($r !== false){
+				return $name;
+			}
+		}
+
+		return false;
+	}
+
+
 	public function countSpaces(){
 		$n = 0;
 		for($x=0;$x<=strlen($this->result);$x++){

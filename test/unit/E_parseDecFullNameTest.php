@@ -1,7 +1,7 @@
 <?php
 
 use \test\serviceSetup as setup;
-class E_parseDevFullNameTest extends PHPUnit_Framework_TestCase{
+class E_parseDecFullNameTest extends PHPUnit_Framework_TestCase{
 
 	private static $control;
 	private static $field;

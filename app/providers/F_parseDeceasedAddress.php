@@ -1,6 +1,6 @@
 <?php
 namespace app\providers{
-class parseDeceasedAddress extends \app\textParser{
+class F_parseDeceasedAddress extends \app\textParser{
 	public function __construct($text, $zip){
 		$this->zip = $zip;
 		$this->text = $text;

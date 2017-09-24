@@ -3,10 +3,42 @@
 namespace app{
 Class textParser{
 
+	protected static $name;
+
 	public function __construct($text, $ZIP){
 		$this->zip = $ZIP;
 		$this->text = $text;
 	}
+
+
+	# Sets Name
+	public static function setName($name){
+		self::$name = $name;
+	}
+
+	# Compares
+	public static function compare($haystack,$needle){
+		
+		//Lists out what letters might be off
+		$changes = array("l"=>"i");
+
+		//Start with a case insentive strpos
+		if(stripos($haystack,$needle) !== false){
+			return stripos($haystack,$needle);
+		}else{
+		//If the strpos fail, the needle will be changed, and try again
+			foreach($changes as $find => $replace){
+				$haystack = str_replace($find,$replace, $haystack);
+				if(stripos($haystack,$needle) !== false){
+					return stripos($haystack,$needle);
+				}
+			}
+		}
+
+
+		return false;
+	}
+
 
 	public function nextWord($text,$pos){
 		for($x=$pos;$x<=strlen($text);$x++){
@@ -124,12 +156,12 @@ Class textParser{
 	
 
 	public function parseProbate($text){
-		$probateDate = new \app\providers\parseProbateDate($text);
-		$deathDate = new \app\providers\parseDeathDate($text);
-		$deceasedName = new \app\providers\parseDeceasedName($text);
-		$deceasedAddress = new \app\providers\parseDeceasedAddress($text, $this->zip);
-		$probateName = new \app\providers\parseProbateName($text);
-		$probateAddress = new \app\providers\parseProbateAddress($text, $this->zip);
+		$probateDate = new \app\providers\C_parseProbateDate($text);
+		$deathDate = new \app\providers\D_parseDeathDate($text);
+		$deceasedName = new \app\providers\E_parseDeceasedName($text);
+		$deceasedAddress = new \app\providers\F_parseDeceasedAddress($text, $this->zip);
+		$probateName = new \app\providers\J_parseProbateName($text);
+		$probateAddress = new \app\providers\K_parseProbateAddress($text, $this->zip);
 		
 		$this->out['CaseType'] = $this->caseType;
 		$this->out['ProbateDate'] = $probateDate->result;
@@ -148,12 +180,12 @@ Class textParser{
 	}
 	
 	public function parseNextofKin($text){
-		$probateDate = new \app\providers\parseProbateDate($text);
-		$deathDate = new \app\providers\parseDeathDate($text);
-		$deceasedName = new \app\providers\parseDeceasedName($text);
-		$deceasedAddress = new \app\providers\parseDeceasedAddress($text, $this->zip);
-		$probateName = new \app\providers\parseProbateName($text, "Af");	
-		$probateAddress = new \app\providers\parseProbateAddress($text, $this->zip);
+		$probateDate = new \app\providers\C_parseProbateDate($text);
+		$deathDate = new \app\providers\D_parseDeathDate($text);
+		$deceasedName = new \app\providers\E_parseDeceasedName($text);
+		$deceasedAddress = new \app\providers\F_parseDeceasedAddress($text, $this->zip);
+		$probateName = new \app\providers\J_parseProbateName($text, "Af");	
+		$probateAddress = new \app\providers\K_parseProbateAddress($text, $this->zip);
 		
 		/*echo "<br><H1>ProbateDate:" . $probateDate->result . "</H1>";
 		echo "<br><H1>DeathDate:" . $deathDate->result . "</H1>";
@@ -194,9 +226,9 @@ Class textParser{
 	
 	public function parseText(){
 		$text = $this->text;
-		$docket = new \app\providers\parseDocket($text);
+		$docket = new \app\providers\A_parseDocket($text);
 				
-		$caseType = new \app\providers\parseCaseType($text);
+		$caseType = new \app\providers\B_parseCaseType($text);
 			
 		#echo "<br><H1>Docket:" . $docket->result . "</H1>";
 		#echo "<br><H1>CaseType:" . $caseType->result . "</H1>";	

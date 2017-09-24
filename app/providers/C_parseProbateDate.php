@@ -1,6 +1,6 @@
 <?php
 namespace app\providers{
-class parseProbateDate extends \app\textParser{
+class C_parseProbateDate extends \app\textParser{
 
 	public function __construct($text){
 		$this->text = $text;

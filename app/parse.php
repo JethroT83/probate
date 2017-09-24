@@ -77,9 +77,23 @@ Class parse {
 			$this->zip[$info['zip']]['state'] = $info['state'];
 		}
 	}
+
+	public function getName(){
+
+		$get = "SELECT * FROM probate.name";
+		$data = $GLOBALS['connection']->select($get);
+
+		$result = array();
+		foreach($data as $i => $info){
+			$result[$info['id']] = $info['name'];
+		}
+
+		return $result;
+	}
 	
 	public function parse($text){
 		$P = new textParser($text, $this->zip);
+		$P::setName($this->getName());
 		$P->parseText();
 		return $P->out;
 	}
