@@ -1,18 +1,19 @@
 <?php
 namespace app{
-
+use \app\runService as service;
 Class parse {
 
 	private $pdfFiles = array();
 
 	public function __construct($file){	
+		
 
+		$this->masterFile = $file;
+
+		// Gets the actual file name
 		$e = explode("/",$file);
 		$this->fname = substr(end($e),0,-4);
 
-
-		$this->masterFile = $file;
-		$this->masterFileName = substr($file,0,strlen($file)-4);
 
 		$this->PDF = new \fpdi\FPDI();
 		$this->pageCount = $this->PDF->setSourceFile($file);
@@ -22,75 +23,19 @@ Class parse {
 
 
 	public function paginatePDF($page){
-		$this->PDF = new \fpdi\FPDI();
-		$this->PDF->setSourceFile($this->masterFile);
-		$this->PDF->AddPage();
-		$this->PDF->setSourceFile($this->masterFile);
+		$PDF = new \fpdi\FPDI();
+		$PDF->setSourceFile($this->masterFile);
+		$PDF->AddPage();
+		$PDF->setSourceFile($this->masterFile);
 		$tplIdx = $this->PDF->importPage($page);
-		$this->PDF->useTemplate($tplIdx);
+		$PDF->useTemplate($tplIdx);
 		$f = $this->pdfFiles[count($this->pdfFiles)] = __DIR__."/../storage/cache/{$this->fname}_p{$page}.pdf";
 		$this->PDF->output($f,'F');
 		return $f;
 	}
 	
 
-	public function convertToJPG($pdfFile, $nameTo){
 
-		$convert = "convert -density 413 -quality 100 ";
-		$convert.= $pdfFile ." ";
-		$convert.= $nameTo;
-
-		system($convert);
-		exec("sudo chmod 777 storage -R");
-	}
-
-
-	public function readJPG($imageFile){
-
-		return (new \TesseractOCR($imageFile))
-			->lang('eng')
-			->run();
-	}
-
-
-	public function array_to_CSV($array, $filename){
-		$keys	=	array_keys($array[1]);
-		$f		=	fopen($filename.".csv" ,'w');
-		fputcsv ($f	 , $keys);
-		
-		foreach($array as $i => $info){
-			$info = preg_replace( "/\r|\n/", "", $info );
-			fputcsv ($f	 , $info);
-		}
-		
-		fclose($f);
-	}
-	
-
-	public function getZip(){
-		$get = "SELECT * FROM probate.zip";
-		$this->result = $GLOBALS['connection']->select($get);
-		
-		foreach($this->result as $i => $info){
-			$this->zip[$info['zip']]['city'] = $info['primary_city'];
-			$this->zip[$info['zip']]['city2'] = $info['acceptable_cities'];
-			$this->zip[$info['zip']]['state'] = $info['state'];
-		}
-	}
-
-	public function getName(){
-
-		$get = "SELECT * FROM probate.name";
-		$data = $GLOBALS['connection']->select($get);
-
-		$result = array();
-		foreach($data as $i => $info){
-			$result[$info['id']] = $info['name'];
-		}
-
-		return $result;
-	}
-	
 	public function parse($text){
 		$P = new textParser($text, $this->zip);
 		$P::setName($this->getName());
@@ -99,11 +44,16 @@ Class parse {
 	}
 
 	public function onController(){
-		$this->getZip();
+
+		# Get the Number of Pages
+		$PDF = new \fpdi\FPDI();
+		$pageCount = $PDF->setSourceFile($file);
+
+
 		exec("sudo chmod 777 storage -R");
-			#echo "\n\nThis is page count -->". $this->pageCount;
-		for($page=1;$page<=$this->pageCount;$page++){
-			
+echo "\n\nThis is page count -->". $this->pageCount;
+		for($page=1;$page<=$pageCount;$page++){
+echo "\n".$page;
 			$textFile = __DIR__."/../storage/cache/{$this->fname}_p{$page}.txt";
 
 			if(is_file($textFile)){
@@ -114,8 +64,8 @@ Class parse {
 				$imageFile = __DIR__."/../storage/cache/{$this->fname}_p{$page}.jpg";
 
 				#echo "<h2 style='color:red'>This is the imageFile-->$imageFile</h2>";
-				$this->convertToJPG($pdfFile, $imageFile);
-				$text = $this->readJPG($imageFile);
+				service::convertToJPG($pdfFile, $imageFile);
+				$text = service::readJPG($imageFile);
 
 				file_put_contents($textFile, $text);
 			}
@@ -124,7 +74,8 @@ Class parse {
 			$out[$page] = $this->parse($text);
 		}
 		exec("sudo chmod 777 storage -R");
-		$this->array_to_CSV($out,  $this->masterFileName . "_out" );
+		$this->array_to_CSV($out,  substr($this->masterFile,0,-4); . "_out" );
 	}
 }
 }
+

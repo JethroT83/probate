@@ -1,5 +1,6 @@
 <?php
 namespace app\providers{
+use \app\parseService as service;
 class E_parseDeceasedName extends \app\textParser{
 
 	public function __construct($text){

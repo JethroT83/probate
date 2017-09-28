@@ -1,5 +1,6 @@
 <?php
 namespace app\providers{
+use \app\parseService as service;
 use \app\providers\parseName as parseName;
 Class J_parseProbateName extends \app\textParser{
 	

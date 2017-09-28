@@ -43,11 +43,12 @@ class A_parseDocketTest extends PHPUnit_Framework_TestCase{
 		$cValue = ""; // Failed control value
 		$failedDocket = false; // Failed Docket number
 		foreach(self::$control as $docket => $control){
+echo "\n\n--".__LINE__."--docket-->".$docket;
 			$test = true;
 
 			// Fail the test of the control is not equal to the test
-			if( 	!isset($csv[$docket]) 
-				|| 	$csv[$docket][self::$field] != $control[self::$field]){
+			if( 	/*!isset($csv[$docket]) 
+				|| */	$csv[$docket][self::$field] != $control[self::$field]){
 				$test = false;
 				$failedDocket = $docket;
 				$cValue = self::$control[$docket][self::$field];
@@ -56,7 +57,7 @@ class A_parseDocketTest extends PHPUnit_Framework_TestCase{
 			}
 		}
 
-		$this->assertTrue($test,"Test failed with docket: ".$failedDocket." control-->" . $cValue . "--test-->".$tValue);
+		$this->assertTrue($test,"Test failed with docket: ".$failedDocket." control-->" . $cValue . "--test-->".$tValue."<--");
 	}
 
 }

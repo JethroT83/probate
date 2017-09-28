@@ -1,5 +1,6 @@
 <?php
 namespace app\providers{
+use \app\parseService as service;
 class C_parseProbateDate extends \app\textParser{
 
 	public function __construct($text){

@@ -1,5 +1,6 @@
 <?php
 namespace app\providers{
+use \app\parseService as service;
 class K_parseProbateAddress extends \app\textParser{
 	public function __construct($text, $zip){
 		$this->zip = $zip;

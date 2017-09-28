@@ -77,9 +77,9 @@ namespace test {
 		#Deletes all the contents in a directory
 		public static function unlink_files(){
 
-			array_map('unlink', glob(self::$dst."/*"));
-			unlink(__DIR__."/../storage/build_out.csv");
-			unlink(__DIR__."/../storage/build.pdf");
+			#array_map('unlink', glob(self::$dst."/*"));
+			#unlink(__DIR__."/../storage/build_out.csv");
+			#unlink(__DIR__."/../storage/build.pdf");
 
 		}
 	}

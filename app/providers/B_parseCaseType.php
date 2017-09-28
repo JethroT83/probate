@@ -1,5 +1,6 @@
 <?php
 namespace app\providers{
+use \app\parseService as service;
 Class B_parseCaseType extends \app\textParser{
 
 	public function __construct($text){

@@ -1,59 +1,100 @@
 <?php
 namespace app\providers{
-Class A_parseDocket extends \app\textParser{
+	use \app\services\parseService as service;
+	use \app\services\runService as run;
+	use \app\services\cacheService as cache;
+	Class A_parseDocket extends \app\textParser{
 
-	public function __construct($text){
-		$this->text = $text;
-		$this->onController();
-		return $this->result;
-	}
-	
-	function parseLevel1(){
-		$pos1 = strpos($this->text,"Docket Number")+15;
-		//$pos2 = strpos($this->text,"Name:",$pos1);
-		$string = substr($this->text,$pos1,10);
-		$d = "";
-		for($x=0;$x<=strlen($string);$x++){
-			$l = substr($string, $x,1);
-			if(is_numeric($l)){
-				$d .= $l;
+
+		public function __construct($text){
+			$this->text = $text;
+			$this->onController();
+			#return $this->result;
+		}
+		
+		#########################################################
+		################	PARSING FUNCTIONS 	 ################
+		#########################################################
+
+
+		# LEVEL 1 #
+		private function parseLevel1(){
+			$lines = explode("\n",$this->text);
+
+			foreach($lines as $i => $line){
+				$_line = str_replace(' ', '', $line);
+
+				if(stripos($_line, "DocketNumber:")!==false){
+					$a = stripos($_line, "DocketNumber:") + 13;
+					$docket = substr($_line,$a,6);
+
+					return trim($docket);
+				}
 			}
 		}
 		
-		return trim($d);
-	}
-	
-	function testLevel1(){
-		$array = array(0,1,3,4,5,6,7,8,9,'0','1','2','3','4','5','6','7','8','9');
-		$length = strlen($this->result);
-		for($x=0;$x<=$length;$x++){
-			$l = substr($this->result,$x,1);
-			//if(array_search($l,$array)==false){
-			if(!is_numeric($l)){
-				return -1;
-			}
+		# LEVEL 2 #
+		private function parseLevel2(){
+exec("sudo chmod 777 ".root." -R");
+			//Delete it at current page
+			#run::unlinkPage(cache::getCache("page"));
+
+$imageFile 	= root."/storage/cache/build_p5.jpg";
+$pdfFile 	= root."/storage/cache/build_p5.pdf";
+@unlink($imageFile);
+@unlink($pdfFile);
+			//Convert JPG again, increasing the quality from 100 to 300
+			run::convertToJPG($pdfFile, $imageFile , $density = 413, $quality = 300);
+
+$txtFile 	= root."/storage/cache/build_p5.txt";
+@unlink($txtFile);
+
+			//Convert to TXT
+			run::readJPG($imageFile);
+
+			//Reparse
+			return $this->parseLevel1();
+
 		}
-		return 1;
+
+
+
+		#########################################################
+		################	TESTING FUNCTIONS 	 ################
+		#########################################################
+
+		private function testLevel1($docket){
+			$out 	= cache::getCache("out");
+			$page 	= cache::getCache("page");
+
+			if($docket > $out[$page-1]){
+				return true;
+			}else{
+				return false;
+			}
+
+		} 
+
+
+		
+		public function onController(){
+			$docket = $this->parseLevel1();
+			$test = $this->testLevel1($docket);
+			if($test == -1){
+				$docket =  $this->parseLevel2();
+			}
+
+			$this->result = $docket;
+		}
 	}
-	
-	function parseLevel2(){
-		$string = "";
+}
+
+		/*$string = "";
 		for($x=0;$x<=strlen($this->result);$x++){
 			if(is_numeric(substr($this->result,$x))){
 				$string .= substr($this->result,$x,1);
 				if(strlen($string) == 7){break;}
 			}
 		}
-		return $string;
-	}
-	
-	public function onController(){
-		$this->result = $this->parseLevel1();
-		$test = $this->testLevel1();
-		if($test == -1){
-			$this->result = $this->parseLevel2();
-		}
-	}
-}
-}
+		return $string;*/
 ?>

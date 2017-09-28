@@ -1,5 +1,6 @@
 <?php
 namespace app\providers{
+use \app\parseService as service;
 class parseName extends \app\textParser{
 	public function __construct($result){
 		$this->result = trim($result);

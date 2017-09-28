@@ -1,6 +1,7 @@
 <?php
 
 namespace app\providers{
+use \app\parseService as service;
 
 Class addressParser extends \app\textParser{
 	public function __construct($result, $zip){
