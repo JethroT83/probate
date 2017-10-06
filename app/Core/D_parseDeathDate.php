@@ -14,24 +14,14 @@ class D_parseDeathDate implements _Contract{
     ################    PARSING FUNCTIONS    ################
     #########################################################
 	public function parseLevel1(){
-		$pos1 = strpos($this->text,"Death:")+strlen("Death:");
-		//$pos2 = strpos($this->text,"Date", $pos1);
-		//$pos2 = $this->nextWord($this->text,$pos1+2);
-		$string = substr($this->text,$pos1,11);
-		$string = trim($string);
-		//echo "This is string-->". $string;
-		$D = new parseDate($string);
-		$r = $D->parseNoSpace();
-		//echo "<br>This is parse no space--->" . $r;
-		return $r;
+
+		return Parse::parseKeyWord($this->text,'DateofDeath:', 9, array(5,11));
 	}
-	
 
 	public function parseLevel2(){
-		$D = new parseDate($this->result);
-		return $D->findEnd($this->result);
-	}
 
+	}
+	
 
     #########################################################
     ################    TESTING FUNCTIONS    ################

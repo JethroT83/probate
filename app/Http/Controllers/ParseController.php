@@ -15,6 +15,8 @@ class ParseController extends Controller{
 		self::$text = file_get_contents($textFile);
 	}
 
+	private function
+
 
 	public function parseLevel1(){
 
@@ -25,7 +27,7 @@ class ParseController extends Controller{
 			
 			// Set Text File
 			$CLASS->text = self::$text;
-			
+
 			//Get Result 
 			$r = $CLASS->parseLevel1();
 

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Core;
-
+use \app\parseService as Parse;
 class A_parseDocket implements _Contract{
 
 
@@ -12,18 +12,7 @@ class A_parseDocket implements _Contract{
 
     # LEVEL 1 #
     public function parseLevel1(){
-        $lines = explode("\n",$this->text);
-
-        foreach($lines as $i => $line){
-            $_line = str_replace(' ', '', $line);
-
-            if(stripos($_line, "DocketNumber:")!==false){
-                $a = stripos($_line, "DocketNumber:") + 13;
-                $docket = substr($_line,$a,6);
-
-                return trim($docket);
-            }
-        }
+        return Parse::parseKeyWord($this->text,'DocketNumber:', 6, array(1,3));
     }
     
     # LEVEL 2 #

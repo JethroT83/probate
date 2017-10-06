@@ -13,8 +13,22 @@ class I_parseDeceasedZip implements _Contract{
     # LEVEL 1 #
     public function parseLevel1(){
 
-        
 
+        $string =  Parse::parseKeyWord($this->text,'Address:', null, array(2,5));
+
+        // String returns -- Address, City, State Zip
+        $e          = explode(",",$string);
+        $zipState   = preg_replace('/\s+/',$e[2]);
+
+        $zip      = substr($zipState,2,5);
+
+        #if(in_array($zip, Address::$zip)){
+        #    return $zip;
+        #}else{
+        #    return false;
+        #}
+        
+        return $zip;
     }
     
     # LEVEL 2 #
@@ -35,4 +49,3 @@ class I_parseDeceasedZip implements _Contract{
     }
 
 
-}

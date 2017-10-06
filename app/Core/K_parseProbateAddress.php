@@ -1,7 +1,8 @@
 <?php
 namespace App\Core; 
 	
-use \App\Core\parseService as service;
+use \App\Core\parseService as Parse;
+use \App\Core\addressService as Address;
 class K_parseProbateAddress implements _Contract{
 
 	public function __construct($text){
@@ -13,6 +14,23 @@ class K_parseProbateAddress implements _Contract{
     ################    PARSING FUNCTIONS    ################
     #########################################################
 	public function parseLevel1(){
+
+		$lines 	= Parse::removeShortLines($this->text,10);
+		$line   = Parse::getProbateLine($lines);
+
+		$a = Parse::findNumber($string,true);
+		$b = Parse::findStreetEndingIndex($string) + 1;
+
+		if($a === false || $b === false){
+			return false;
+		}else{
+			return Parse::sliceLine($line,$a,$b);
+		}
+	}
+
+
+
+	/*public function parseLevel1(){
 		#echo "<br>Probate Address1--->".$this->text;
 		//$pos = strpos($this->text,"Relation")+strlen("Relation");
 		$pos1 = $this->strposProbate($this->text,"Relation")+strlen("Relation");
@@ -54,11 +72,11 @@ class K_parseProbateAddress implements _Contract{
 		$this->result['city'] 	= $city;
 		$this->result['state'] = $state;
 		$this->result['zip'] 	= $zip;
-	}
+	}*/
 	
 
 	public function parseLevel2(){
-		$AD = $this->AD;
+		/*$AD = $this->AD;
 		#echo "<H5 style='color:purple'>Probate Address Parse Level 2</H5>";
 		if($this->result['zip']  == -1){
 			$this->result['zip']   = $AD->zipFinderLevel2($this->result['state'], $this->zip);
@@ -70,7 +88,7 @@ class K_parseProbateAddress implements _Contract{
 		
 		if($this->result['street'] == -1){
 			$this->result['street'] = $AD->streetFinderLevel3($this->result['state']);
-		}
+		}*/
 	}
 	
 

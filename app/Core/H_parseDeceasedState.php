@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Core;
-
+use \App\Core\ParseService as Parse;
+use \App\Core\AddressService as Address;
 class H_parseDeceasedState implements _Contract{
 
 
@@ -12,7 +13,20 @@ class H_parseDeceasedState implements _Contract{
 
     # LEVEL 1 #
     public function parseLevel1(){
+        
+        $string =  Parse::parseKeyWord($this->text,'Address:', null, array(2,5));
 
+        // String returns -- Address, City, State Zip
+        $e          = explode(",",$string);
+        $zipState   = preg_replace('/\s+/',$e[2]);
+
+        $state      = substr($zipState,0,2);
+
+        if(in_array($state, Address::$states)){
+            return $state;
+        }else{
+            return false;
+        }
     }
     
     # LEVEL 2 #

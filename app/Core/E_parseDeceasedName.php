@@ -2,21 +2,15 @@
 
 namespace App\Core;
 
-use \App\Core\parseService as service;
+use \App\Core\parseService as Parse;
 class E_parseDeceasedName implements _Contract{
 
-	public function __construct($text){
-		$this->text = $text;
-	}
 	
     #########################################################
     ################    PARSING FUNCTIONS    ################
     #########################################################
 	public function parseLevel1(){
-		$pos1 = strpos($this->text,"Name:")+strlen("Name:");
-		$pos2 = strpos($this->text,"Address",$pos1);
-		$string = substr($this->text,$pos1,$pos2-$pos1);
-		return trim($string);
+		return Parse::parseKeyWord($this->text,'Name:', null, array(2,5));
 	}
 
 

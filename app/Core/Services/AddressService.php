@@ -1,7 +1,55 @@
 <?PHP
 namespace App\Core\Services;
-
+use \App\Core\Services\ParseService as Parse;
 class AddressService{
+
+
+
+	public static $streetEndings = array('alley',	'annex',	'arcade',	'avenue',	'bayoo',	'beach',	'bend',	'bluff',	'bluffs',	'bottom',	'boulevard',	'branch',	'bridge',	'brook',	'brooks',	'burg',	'burgs',	'bypass',	'camp',	'canyon',	'cape',	'causeway',	'center',	'centers',	'circle',	'circles',	'cliff',	'cliffs',	'club',	'common',	'corner',	'corners',	'course',	'court',	'courts',	'cove',	'coves',	'creek',	'crescent',	'crest',	'crossing',	'crossroad',	'curve',	'dale',	'dam',	'divide',	'drive',	'drives',	'estate',	'estates',	'expressway',	'extension',	'extensions',	'fall',	'falls',	'ferry',	'field',	'fields',	'flat',	'flats',	'ford',	'fords',	'forest',	'forge',	'forges',	'fork',
+						'forks',	'fort',	'freeway',	'garden',	'gardens',	'gateway',	'glen',	'glens',	'green',	'greens',	'grove',	'groves',	'harbor',	'harbors',	'haven',	'heights',	'highway',	'hill',	'hills',	'hollow',	'inlet',	'interstate',	'island',	'islands',	'isle',	'junction',	'junctions',	'key',	'keys',	'knoll',	'knolls',	'lake',	'lakes',	'land',	'landing',	'lane',	'light',	'lights',	'loaf',	'lock',	'locks',	'lodge',	'loop',	'mall',	'manor',	'manors',	'meadow',	'meadows',	'mews',	'mill',	'mills',	'mission',	'moorhead',	'motorway',	'mount',	'mountain',	'mountains','neck',	'orchard',	'oval',	'overpass',	'park',	'parks',	'parkway',	'parkways',	'pass',
+						'passage',	'path','pike',	'pine',	'pines',	'place',	'plain',	'plains',	'plaza',	'point',	'points',	'port',	'ports',	'prairie',	'radial',	'ramp',	'ranch',	'rapid',	'rapids',	'rest',	'ridge',	'ridges',	'river',	'road',	'roads',	'route',	'row',	'rue',	'run',	'shoal',	'shoals',	'shore',	'shores',	'skyway',	'spring',	'springs',	'spur',	'spurs',	'square',	'squares',	'station',	'stream',	'street',	'streets',	'summit',	'terrace',	'throughway',	'trace',	'track',	'trail',	'tunnel',	'turnpike',	'underpass',	'union',	'unions',	'valley',	'valleys',	'viaduct',	'view',	'views',	'village',	'villages',	'ville',	'vista',	'walk',	'walks',	'wall',	'way',	'ways',	'well',	'wells',
+						'aly',	'anx',	'arc',	'ave',	'byu',	'bch',	'bnd',	'blf',	'blfs',	'btm',	'blvd',	'br',	'brg',	'brk',	'brks',	'bg',	'bgs',	'byp',	'cp',	'cyn',	'cpe',	'cswy',	'ctr',	'ctrs',	'cir',	'cirs',	'clf',	'clfs',	'clb',	'cmn',	'cor',	'cors',	'crse',	'ct',	'cts',	'cv',	'cvs',	'crk',	'cres',	'crst',	'xing',	'xrd',	'curv',	'dl',	'dm',	'dv',	'dr',	'drs',	'est',	'ests',	'expy',	'ext',	'exts',	'fall',	'fls',	'fry',	'fld',	'flds',	'flt',	'flts',	'frd',	'frds',	'frst',	'frg',	'frgs',	'frk',	'frks',	'ft',	'fwy',	'gdn',	'gdns',	'gtwy',	'gln',	'glns',	'grn',	'grns',	'grv',	'grvs',	'hbr',	'hbrs',	'hvn',	'hts',	'hwy',	'hl',	'hls',	'holw',	'inlt',	'i',	'is',	'iss',	'isle',	'jct',	'jcts',	'ky',	'kys',	'knl',	'knls',
+						'lk',	'lks',	'land',	'lndg',	'ln',	'lgt',	'lgts',	'lf',	'lck',	'lcks',	'ldg',	'loop',	'mall',	'mnr',	'mnrs',	'mdw',	'mdws',	'mews',	'ml',	'mls',	'msn',	'mhd',	'mtwy',	'mt',	'mtn',	'mtns',	'nck',	'orch',	'oval',	'opas',	'park',	'park',	'pkwy',	'pkwy',	'pass',	'psge',	'path',	'pike',	'pne',	'pnes',	'pl',	'pln',	'plns',	'plz',	'pt',	'pts',	'prt',	'prts',	'pr',	'radl',	'ramp',	'rnch',	'rpd',	'rpds',	'rst',	'rdg',	'rdgs',	'riv',	'rd',	'rds',	'rte',	'row',	'rue',	'run',	'shl',	'shls',	'shr',	'shrs',	'skwy',	'spg',	'spgs',	'spur',	'spur',	'sq',	'sqs',	'sta',	'strm',	'st',	'sts',	'smt',	'ter',	'trwy',	'trce',	'trak',	'trl',	'tunl',	'tpke',	'upas',	'un',	'uns',	'vly',
+						'vlys',	'via',	'vw',	'vws',	'vlg',	'vlgs',	'vl',	'vis',	'walk',	'walk',	'wall',	'way',	'ways',	'wl',	'wls');
+
+	
+
+	# State
+	public static  function getStateIndex($line,$i=0){
+		
+		$index = Parse::findCaseIndex($line,'UPPER');
+		$a = $index + $i;
+
+		if($index === false){
+			return false;
+		}else{
+		    $pIndex = $index + $i;
+			$state = Parse::sliceLine($line,$index,$index+1);
+
+			if(strlen($state) == 2 && ctype_alpha($state) && strtoupper($state) == $state){
+				
+				return $pIndex;
+			}else{
+			    $line = Parse::sliceLine($line,$index+1);
+				return getStateIndex($line,$pIndex+1);
+			}
+		}
+
+	}
+
+	#Address
+	public static function getStreetEndingIndex($line){
+
+		$e = explode(' ',$linex);
+
+		foreach($e as $index => $a){
+			if(in_array(strtolower($a),self::$streetEndings)){
+				return $index;
+			}
+		}
+
+		return false;
+	}
 
 	# Set Zip
 	private static function setZip(){
@@ -20,7 +68,7 @@ class AddressService{
 	}
 
 
-	# Returns All the Zip Codes Across the US
+	# Returns All the Zip Codes Across the 
 	public static function getZip(){
 
 		if(count(self::$zip) == 0){self::setZip();}
@@ -214,6 +262,15 @@ class AddressService{
 		}
 	}
 	
+
+	#############################################################################################
+	###################################		STATES 		#########################################
+	#############################################################################################
+	public static $states = array('AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA',
+						'MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN',
+						'TX','UT','VT','VA','WA','WV','WI','WY','AS','DC','FM','GU','MH','MP','PW','PR','VI','AE','AA','AE','AE',
+						'AE','AP');
+
 	//## States
 	public function stateFinderLevel1(){
 		$states = array('AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA',
