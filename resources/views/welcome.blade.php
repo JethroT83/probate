@@ -73,7 +73,7 @@
                     @else
                         <a href="{{ route('login') }}">Login</a>
                         <a href="{{ route('register') }}">Register</a>
-                        <a href="{{ route('run') }}">Run Shit</a>
+                        <a href="{{ route('run') }}">Run File</a>
                     @endauth
                 </div>
             @endif
