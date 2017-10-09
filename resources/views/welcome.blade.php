@@ -85,7 +85,7 @@
 
                 <div class="links">
 
-                    <a href="{{ route('run') }}">Run Shit</a>
+                    <a href="{{ route('run') }}">Run File</a>
                     <!--<a href="https://laravel.com/docs">Documentation</a>
                     <a href="https://laracasts.com">Laracasts</a>
                     <a href="https://laravel-news.com">News</a>
