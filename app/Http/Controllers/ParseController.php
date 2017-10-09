@@ -15,15 +15,14 @@ class ParseController extends Controller{
 		self::$text = file_get_contents($textFile);
 	}
 
-	private function
-
-
 	public function parseLevel1(){
 
 		foreach(self::$parseClasses as $column => $parseClass){
 
+			$parseClass = "\App\Core\\".$parseClass;
+
 			// Call Parsing Class
-			$CLASS = new \App\Core\$parseClass;
+			$CLASS = new $parseClass;
 			
 			// Set Text File
 			$CLASS->text = self::$text;
@@ -32,7 +31,7 @@ class ParseController extends Controller{
 			$r = $CLASS->parseLevel1();
 
 			//Test Result
-			$test = $CLASS->testLevel1();
+			$test = $CLASS->testLevel1($r);
 
 			// Attach result
 			if($test === true){	$result[$column] = $r;
@@ -47,16 +46,22 @@ class ParseController extends Controller{
 
 	public function onController(){
 
-		self::$parseClasses = array('docket'=>'A_parseDocket',
-									'caseType'=>'B_parseCaseType',
+		self::$parseClasses = array('Docket'=>'A_parseDocket',
+									'CaseType'=>'B_parseCaseType',
 									'ProbateDate'=>'C_parseProbateDate',
-									'DeathDate'=>'D_parseDeathDate',
-									'DeceasedName'=>'E_parseDeceasedName',
-									'DeceasedAddress'=>'F_parseDeceasedAddress',
-									'ProbateName'=>'J_parseProbateName',
-									'ProbateAddress'=>'K_parseProbateAddress');
+									'DateofDeath'=>'D_parseDeathDate',
+									'DecdFullNamePulled'=>'E_parseDeceasedName',
+									'DecdLastAddress'=>'F_parseDeceasedAddress',
+									'DecdLastCity'=>'G_parseDeceasedCity',
+									'DecdLastState'=>'H_parseDeceasedState',
+									'DecdLastZip'=>'I_parseDeceasedZip',
+									'PRFullNamePulled'=>'J_parseProbateName',
+									'PRAddress'=>'K_parseProbateAddress',
+									'PRCity'=>'L_parseProbateCity',
+									'PRState'=>'M_parseProbateState',
+									'PRZip'=>'N_parseProbateZip');
 
-		$result = $this->parseLevel1();
+		return $this->parseLevel1();
 
 	}	
 }

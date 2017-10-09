@@ -31,7 +31,7 @@ class AddressService{
 				return $pIndex;
 			}else{
 			    $line = Parse::sliceLine($line,$index+1);
-				return getStateIndex($line,$pIndex+1);
+				return self::getStateIndex($line,$pIndex+1);
 			}
 		}
 
@@ -40,7 +40,7 @@ class AddressService{
 	#Address
 	public static function getStreetEndingIndex($line){
 
-		$e = explode(' ',$linex);
+		$e = explode(' ',$line);
 
 		foreach($e as $index => $a){
 			if(in_array(strtolower($a),self::$streetEndings)){
@@ -54,7 +54,7 @@ class AddressService{
 	# Set Zip
 	private static function setZip(){
 
-		$get = "SELECT * FROM probate.zip";
+		/*$get = "SELECT * FROM probate.zip";
 		$data = DB::($get);
 		
 		$result = array();
@@ -64,7 +64,7 @@ class AddressService{
 			$result[$info['zip']]['state'] = $info['state'];
 		}
 
-		self::$zip = $result;
+		self::$zip = $result;*/
 	}
 
 

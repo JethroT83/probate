@@ -2,12 +2,9 @@
 namespace App\Core;
 
 	
-use \App\Core\ParseService as service;
+use \App\Core\Services\ParseService as Parse;
+
 class D_parseDeathDate implements _Contract{
-	
-	public function __construct($text){
-		$this->text = $text;
-	}
 	
 
     #########################################################
@@ -15,7 +12,7 @@ class D_parseDeathDate implements _Contract{
     #########################################################
 	public function parseLevel1(){
 
-		return Parse::parseKeyWord($this->text,'DateofDeath:', 9, array(5,11));
+		return Parse::parseKeyWord($this->text,'Date of Death:', 10, array(5,11));
 	}
 
 	public function parseLevel2(){
@@ -26,11 +23,11 @@ class D_parseDeathDate implements _Contract{
     #########################################################
     ################    TESTING FUNCTIONS    ################
     #########################################################
-	public function testLevel1(){
-		if(strlen($this->result) == 10){
-			return 1;
+	public function testLevel1($result){
+		if(strlen($result) == 10){
+			return true;
 		}else{
-			return -1;
+			return false;
 		}
 	}
 	

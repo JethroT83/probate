@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Core;
-use \App\Core\ParseService as Parse;
-use \App\Core\AddressService as Address;
+use \App\Core\Services\ParseService as Parse;
+use \App\Core\Services\AddressService as Address;
 class G_parseDeceasedCity implements _Contract{
 
 
@@ -19,7 +19,7 @@ class G_parseDeceasedCity implements _Contract{
         // String returns -- Address, City, State Zip
         $e      = explode(",",$string);
 
-        if(is_numberic($e[1]) || strlen($e[1]) == 0){
+        if(is_numeric($e[1]) || strlen($e[1]) == 0){
             return false;
         }else{
             return trim($e[1]);  
@@ -38,9 +38,8 @@ class G_parseDeceasedCity implements _Contract{
     ################    TESTING FUNCTIONS    ################
     #########################################################
 
-    public function testLevel1(){
-
-
+    public function testLevel1($result){
+        return true;
     }
 
 

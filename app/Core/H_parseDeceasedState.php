@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Core;
-use \App\Core\ParseService as Parse;
-use \App\Core\AddressService as Address;
+use \App\Core\Services\ParseService as Parse;
+use \App\Core\Services\AddressService as Address;
 class H_parseDeceasedState implements _Contract{
 
 
@@ -18,7 +18,7 @@ class H_parseDeceasedState implements _Contract{
 
         // String returns -- Address, City, State Zip
         $e          = explode(",",$string);
-        $zipState   = preg_replace('/\s+/',$e[2]);
+        $zipState   = preg_replace('/\s+/','',$e[2]);
 
         $state      = substr($zipState,0,2);
 
@@ -41,8 +41,8 @@ class H_parseDeceasedState implements _Contract{
     ################    TESTING FUNCTIONS    ################
     #########################################################
 
-    public function testLevel1(){
-
+    public function testLevel1($result){
+        return true;
 
     }
 

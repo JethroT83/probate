@@ -2,7 +2,7 @@
 
 namespace App\Core\Services;
 
-Class parseService{
+Class ParseService{
 
 	public static $out;
 	private static $zip;
@@ -12,7 +12,7 @@ Class parseService{
 	# Break Out Lines
 	public static function breakLines($text){
 
-		$lines = explode('\n',$text);
+		$lines = explode("\n",$text);
 
 		$result = array();
 		foreach($lines as $i => $line){
@@ -33,35 +33,54 @@ Class parseService{
 	#	qLine - the lines to be examined.  
 	#			array(start,end) -- based on index so the first value is 0
 	# ###################################################################################
-	public static function parseKeyWord($text,$keyword, $scope =null, $qLine = array()){
+	public static function parseKeyWord($text,$keyword,$scope=null,$qLine = array()){
 
 		$lines = self::breakLines($text);
 
 		if(count($qLine)==0){
 			$a = 0;
 			$b = count($lines);
+		}else{
+			$a = $qLine[0];
+			$b = $qLine[1];
 		}
 
 		for($i=$a;$i<$b;$i++){
 
 			// Set Line
-        	$line = $lines[$i];
+        	$line = trim($lines[$i]);
 
             // Remove Spaces
-            $line = preg_replace('/\s+/',$line);
-            $keyword = preg_replace('/\s+/',$keyword);
+            #$_line = preg_replace('/\s+/','',$line);
+            #$_keyword = preg_replace('/\s+/','',$keyword);
 
             // Get Position of Keyword
             $pos = stripos($line,$keyword);
-            if($pos !== false){
 
-                $pos = $pos + strlen($keyword);
-                return substr($line,$pos,$scope);
+            if($pos !== false){
+                $pos = $pos + strlen($keyword)+1;
+                if(is_null($scope)){
+                	return substr($line,$pos);
+                }else{
+                	return substr($line,$pos,$scope);
+                }
             }
         }
 
         return false;
     }
+
+
+    public static function indexArray($array){
+
+    	$result = array();
+    	foreach($array as $i =>$info){
+    		array_push($result,$info);
+    	}
+
+    	return $result;
+    }
+
 
 
 	# ###################################################################################
@@ -70,7 +89,7 @@ Class parseService{
     # Text - the text from OCR
     # Length - if less than legth, remove line
 	# ###################################################################################
-    public function removeShortLines($text, $length){
+    public static function removeShortLines($text, $length){
 
     	$lines = self::breakLines($text);
 
@@ -93,8 +112,8 @@ Class parseService{
 		
 		foreach($lines as $i => $line){
 			
-			$line = preg_replace('/\s+/',$line);
-			
+			$line = preg_replace('/\s+/','',$line);
+
 			//Probate addres comes right after the line
 			// that says 'TYPE Address:'
 			if(stripos($line,'typeAddress:') !== false){

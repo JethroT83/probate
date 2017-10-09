@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Core;
-use \app\parseService as Parse;
+use \App\Core\Services\ParseService as Parse;
 class B_parseCaseType implements _Contract{
 
     #########################################################
@@ -13,12 +13,12 @@ class B_parseCaseType implements _Contract{
     public function parseLevel1(){
 
         // Break out Lines
-        $lines = Parse::breakLines($text);
-        
+        $lines = Parse::breakLines($this->text);
+
          // Case Type is normally on line 3
-         for($i=0,$i<5,$i++){
+         for($i=0;$i<5;$i++){
             $line = $lines[$i];
-            foreach(self::$caseTypes as $i => $caseType){
+            foreach(self::$caseTypes as $j => $caseType){
                 if(stripos($line,$caseType) !==false){
                     return $caseType;
                 }
@@ -42,12 +42,13 @@ class B_parseCaseType implements _Contract{
     #########################################################
     ################    TESTING FUNCTIONS    ################
     #########################################################
-    public function testLevel1(){
-        if(array_search($this->result,$this->caseTypes)!==false){
-            return 1;
+    public function testLevel1($result){
+        return true;
+        /*if(array_search($result,self::$caseTypes)!==false){
+            return true;
         }else{
-            return -1;
-        }
+            return false;
+        }*/
     }
     
 

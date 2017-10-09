@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Core;
-use \app\parseService as Parse;
+use \App\Core\Services\ParseService as Parse;
 class A_parseDocket implements _Contract{
 
 
@@ -12,12 +12,12 @@ class A_parseDocket implements _Contract{
 
     # LEVEL 1 #
     public function parseLevel1(){
-        return Parse::parseKeyWord($this->text,'DocketNumber:', 6, array(1,3));
+        return Parse::parseKeyWord($this->text,'Docket Number:', 6, array(1,5));
     }
     
     # LEVEL 2 #
     public function parseLevel2(){
-		exec("sudo chmod 777 ".root." -R");
+		#exec("sudo chmod 777 ".root." -R");
 		        //Delete it at current page
 		        #run::unlinkPage(cache::getCache("page"));
 
@@ -45,16 +45,14 @@ class A_parseDocket implements _Contract{
     ################    TESTING FUNCTIONS    ################
     #########################################################
 
-    public function testLevel1(){
-        $out    = cache::getCache("out");
-        $page   = cache::getCache("page");
+    public function testLevel1($result){
 
-        if($docket > $out[$page-1]){
+        // Docket is a 6 digit number
+        if( strlen($result) == 6 && is_numeric($result) ){
             return true;
         }else{
             return false;
         }
-
     }
 
 

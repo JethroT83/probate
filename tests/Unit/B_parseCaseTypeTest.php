@@ -2,23 +2,28 @@
 
 namespace Tests\Unit;
 
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\SetupService as Setup;
 
-use \test\serviceSetup as setup;
-class B_parseCaseTypeTest extends PHPUnit_Framework_TestCase{
+class B_parseCaseTypeTest extends TestCase{
 
 	private static $control;
 	private static $field;
 
 	protected function setUp(){
 
+		# Larael
+		parent::setup();
+
 		# Basic Unit Setup
-		setup::setUpUnit();
+		Setup::setUpUnit();
 
 		# Copies the data set to the storage Folder
-		setup::copy_files();
+		Setup::copy_files();
 
 		# Get the Controled Variables form the dataSet folder
-		self::$control = setup::getControl();
+		self::$control = Setup::getControl();
 
 		# Sets the field name that will be tested
 		self::$field = "CaseType";
@@ -29,17 +34,17 @@ class B_parseCaseTypeTest extends PHPUnit_Framework_TestCase{
 	protected function tearDown(){
 		
 		# Deletes the files in the storage folder
-		setup::unlink_files();
+		Setup::unlink_files();
 	}
 
 
 	public function testCode(){
 
-		require("index.php");
+		$R = new \App\Http\Controllers\RunController();
+		$R->handle();
 
 		# Get the test data
-		$csv = setup::getTest();
-
+		$csv = Setup::getTest();
 
 		$test = true; // Boolean 
 		$tValue = ""; // Failed test value
@@ -47,7 +52,6 @@ class B_parseCaseTypeTest extends PHPUnit_Framework_TestCase{
 		$failedDocket = false; // Failed Docket number
 		foreach(self::$control as $docket => $control){
 			$test = true;
-
 			// Fail the test of the control is not equal to the test
 			if( 	!isset($csv[$docket]) 
 				|| 	$csv[$docket][self::$field] != $control[self::$field]){

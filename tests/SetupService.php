@@ -2,60 +2,61 @@
 namespace Tests;
 
 
-class serviceSetup{
+class SetupService{
 
-	private static $dst;
-	private static $dir;
-	private static $src;
+	private static $pdfFile;
+	private static $controlFile;
+	private static $txtDir;
+	private static $cacheDir;
 	private static $t;
 
 	# Basic Unit Setup
 	public static function setUpUnit(){
 
-		# Get the data set from the environmental variable t
-		self::$t = getenv("t");
+		@DEFINE("ROOT",__DIR__."/../"); // Define root directory
 
-		# If no environmental variable is set, set t=1
-		if(!isset(self::$t)){self::$t=1;}
+		if(is_null(getenv("t"))){self::$t=1;}//If no environmental variable is set, set t=1
+		else{		self::$t = getenv("t");}//Get the data set from the environmental variable t
 
-		self::$dir  = __DIR__."/dataSet_".self::$t;
-		self::$src  = self::$dir."/build/txt";
-		self::$dst  = __DIR__."/../storage/cache";
+		$dir = "dataSet_".self::$t;
+		self::$pdfFile  	= ROOT."storage/framework/testing/{$dir}/build/build.pdf";
+		self::$controlFile  = ROOT."storage/framework/testing/{$dir}/control/control.json";
+		self::$txtDir  		= ROOT."storage/framework/testing/{$dir}/build/txt";
+		self::$cacheDir  	= ROOT."storage/app";
 	}
 
 
 	# Copies all the contents of a directory to another 
-	public static function  copy_files() { 
-		
-		#Copy the build.pdf
-		copy(self::$dir."/build/build.pdf",ROOT."/storage/build.pdf");
+	public static function copy_files(){ 
+
+		copy(self::$pdfFile,self::$cacheDir."/build.pdf");
 
 		# Copies all text files
-    	$dir = opendir(self::$src); 
-		@mkdir(self::$dst); 
+    	$dir = opendir(self::$txtDir); 
+ 
 		while(false !== ( $file = readdir($dir)) ) { 
 			if (( $file != '.' ) && ( $file != '..' )) { 
-				if ( is_dir(self::$src . '/' . $file) ) { 
-				    recurse_copy(self::$src . '/' . $file,$dst . '/' . $file); 
+				if ( is_dir(self::$txtDir . '/' . $file) ) { 
+				    recurse_copy(self::$txtDir . '/' . $file,self::$cacheDir . '/' . $file); 
 				} 
 				else { 
-				    copy(self::$src . '/' . $file,self::$dst . '/' . $file); 
+				    copy(self::$txtDir . '/' . $file,self::$cacheDir . '/' . $file); 
 				} 
 			} 
-		} 
+		}
+
 		closedir($dir);
-		#pause();
 	} 
 
 	# Retrives the Controlled variables from the data set folder
 	public static function getControl(){
-		return json_decode(file_get_contents(self::$dir."/control/control.json"),true);
+		return json_decode(file_get_contents(self::$controlFile),true);
 	}
 
 	# Retrieves the test variables from the app
 	public static function getTest(){
 		# Open CSV file the app outputs
-		$rows = array_map('str_getcsv', file(__DIR__."/../storage/build_out.csv"));
+		$rows = array_map('str_getcsv', file(self::$cacheDir."/build_out.csv"));
 
 		# Bind the values to the keys
 		foreach( $rows as $key => $value ) {

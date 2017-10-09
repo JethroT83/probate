@@ -2,7 +2,10 @@
 
 namespace App\Core;
 
-class N_parseProbateCity implements _Contract{
+use \App\Core\Services\ParseService as Parse;
+use \App\Core\Services\AddressService as Address;
+
+class N_parseProbateZip implements _Contract{
 
 
     #########################################################
@@ -13,6 +16,7 @@ class N_parseProbateCity implements _Contract{
     # LEVEL 1 #
     public function parseLevel1(){
         $lines  = Parse::removeShortLines($this->text,10);
+        $lines  = Parse::indexArray($lines);
         $line   = Parse::getProbateLine($lines);
 
         $a = Address::getStateIndex($line);
@@ -20,7 +24,6 @@ class N_parseProbateCity implements _Contract{
         if($a === false){
             return false;
         }else{
-
             return Parse::sliceLine($line,$a+1,$a+2);//Get City in the line
         }
     }
@@ -37,9 +40,8 @@ class N_parseProbateCity implements _Contract{
     ################    TESTING FUNCTIONS    ################
     #########################################################
 
-    public function testLevel1(){
-
-
+    public function testLevel1($result){
+        return true;
     }
 
 

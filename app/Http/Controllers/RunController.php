@@ -22,11 +22,11 @@ class RunController extends Controller{
 
 
 		//Runs the Code
-		$this->onController();
+		#$this->onController();
 	}
 
 
-	public function onController(){
+	public function handle(){
 
 		// Get the Number of Pages
 		$pageCount = run::getPageCount($this->file);
@@ -47,12 +47,15 @@ class RunController extends Controller{
 			Cache::put('imageFile',$imageFile,20);
 
 			$textFile = ROOT."storage/app/{$this->fname}_p{$page}.txt";
+			$txtFname = "/var/www/probate/storage/app/{$this->fname}_p{$page}.txt";
 			Cache::put('textFile',$textFile,20);
 
-
+			#$txt = file_get_contents($textFile);
+			#if(strlen($txt) !=0 ){die('fuck');}
 			// If there is a text file in cache, use it
 			if(is_file($textFile)){
-				$text = Storage::get($textFile);
+				#$text = Storage::get($txtFname);
+				$text = file_get_contents($textFile);
 			}else{
 
 				// break out the PDF page
@@ -75,6 +78,6 @@ class RunController extends Controller{
 		}
 
 		//Converts the object to a csv file
-		#run::array_to_CSV($out,  substr($this->file,0,-4) . "_out" );
+		run::array_to_CSV($out,  substr($this->file,0,-4) . "_out" );
 	}
 }

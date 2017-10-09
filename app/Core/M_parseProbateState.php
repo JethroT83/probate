@@ -2,7 +2,10 @@
 
 namespace App\Core;
 
-class M_parseProbateCity implements _Contract{
+use \App\Core\Services\ParseService as Parse;
+use \App\Core\Services\AddressService as Address;
+
+class M_parseProbateState implements _Contract{
 
 
     #########################################################
@@ -13,6 +16,7 @@ class M_parseProbateCity implements _Contract{
     # LEVEL 1 #
     public function parseLevel1(){
         $lines  = Parse::removeShortLines($this->text,10);
+        $lines  = Parse::indexArray($lines);
         $line   = Parse::getProbateLine($lines);
 
         $a = Address::getStateIndex($line);
@@ -38,8 +42,8 @@ class M_parseProbateCity implements _Contract{
     ################    TESTING FUNCTIONS    ################
     #########################################################
 
-    public function testLevel1(){
-
+    public function testLevel1($result){
+        return true;
 
     }
 

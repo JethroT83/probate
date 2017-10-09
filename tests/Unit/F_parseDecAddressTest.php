@@ -2,14 +2,19 @@
 
 namespace Tests\Unit;
 
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\SetupService as Setup;
 
-use \test\serviceSetup as setup;
-class F_parseDecAddressTest extends PHPUnit_Framework_TestCase{
+class F_parseDecAddressTest extends TestCase{
 
 	private static $control;
 	private static $field;
 
 	protected function setUp(){
+
+		# Larael
+		parent::setup();
 
 		# Basic Unit Setup
 		setup::setUpUnit();
@@ -35,7 +40,8 @@ class F_parseDecAddressTest extends PHPUnit_Framework_TestCase{
 
 	public function testCode(){
 
-		require("index.php");
+		$R = new \App\Http\Controllers\RunController();
+		$R->handle();
 
 		# Get the test data
 		$csv = setup::getTest();

@@ -117,7 +117,7 @@ file_put_contents("cmd.txt",$cmd);
 	# Converts an array to CSV
 	public static function array_to_CSV($array, $filename){
 
-		exec("sudo chmod 777 storage -R");
+		#exec("sudo chmod 777 storage -R");
 		$keys	=	array_keys($array[1]);
 		$f		=	fopen($filename.".csv" ,'w');
 		fputcsv ($f	 , $keys);

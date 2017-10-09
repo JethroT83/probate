@@ -1,22 +1,19 @@
 <?php
 namespace App\Core;
 	
-use \App\Core\ParseService as Parse;
-use \App\Core\ParseName as Name;
+use \App\Core\Services\ParseService as Parse;
+use \App\Core\Services\AddressService as Address;
+
 Class J_parseProbateName implements _Contract{
 	
-	#public function __construct($text){
-	#	$this->text = $text;
-	#}
-
-
-
     #########################################################
     ################    PARSING FUNCTIONS    ################
     #########################################################
 	public function parseLevel1(){
 
 		$lines = Parse::removeShortLines($this->text,10);
+		$lines = Parse::indexArray($lines);
+		
 		$line  = Parse::getProbateLine($lines);
 
 		// Removes all non-proper cased words
@@ -33,7 +30,7 @@ Class J_parseProbateName implements _Contract{
 	}
 
 
-	public function parseLeve2(){
+	public function parseLevel2(){
 		/*$lines = explode("\n",$this->text);
 
 		$l = "";
@@ -63,8 +60,8 @@ Class J_parseProbateName implements _Contract{
     #########################################################
     ################    TESTING FUNCTIONS    ################
     #########################################################
-	public function testLevel1(){
-		return;
+	public function testLevel1($result){
+		return true;
 	}
 }
 

@@ -19,7 +19,7 @@ interface _Contract{
 
 
 	# First method is tested
-	public function testLevel1();
+	public function testLevel1($result);
 
 
 	# Second method attemtped

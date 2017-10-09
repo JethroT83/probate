@@ -2,6 +2,9 @@
 
 namespace App\Core;
 
+use \App\Core\Services\ParseService as Parse;
+use \App\Core\Services\AddressService as Address;
+
 class I_parseDeceasedZip implements _Contract{
 
 
@@ -13,12 +16,11 @@ class I_parseDeceasedZip implements _Contract{
     # LEVEL 1 #
     public function parseLevel1(){
 
-
         $string =  Parse::parseKeyWord($this->text,'Address:', null, array(2,5));
 
         // String returns -- Address, City, State Zip
         $e          = explode(",",$string);
-        $zipState   = preg_replace('/\s+/',$e[2]);
+        $zipState   = preg_replace('/\s+/','',$e[2]);
 
         $zip      = substr($zipState,2,5);
 
@@ -43,9 +45,8 @@ class I_parseDeceasedZip implements _Contract{
     ################    TESTING FUNCTIONS    ################
     #########################################################
 
-    public function testLevel1(){
-
+    public function testLevel1($result){
+        return true;
 
     }
-
-
+}

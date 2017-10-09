@@ -2,7 +2,7 @@
 
 namespace App\Core;
 
-use \App\Core\parseService as Parse;
+use \App\Core\Services\ParseService as Parse;
 class E_parseDeceasedName implements _Contract{
 
 	
@@ -10,7 +10,7 @@ class E_parseDeceasedName implements _Contract{
     ################    PARSING FUNCTIONS    ################
     #########################################################
 	public function parseLevel1(){
-		return Parse::parseKeyWord($this->text,'Name:', null, array(2,5));
+		return Parse::parseKeyWord($this->text,'Name:', null, array(2,7));
 	}
 
 
@@ -25,7 +25,7 @@ class E_parseDeceasedName implements _Contract{
     #########################################################
     ################    TESTING FUNCTIONS    ################
     #########################################################
-	public function testLevel1(){
+	public function testLevel1($result){
 		/*$p = new parseDeceasedName($this->result);
 		$spaces = $p->countSpaces();
 		if($space == 1){
@@ -33,7 +33,7 @@ class E_parseDeceasedName implements _Contract{
 		else{
 			return -1;
 		}*/
-		return 1;
+		return true;
 	}
 	
 
