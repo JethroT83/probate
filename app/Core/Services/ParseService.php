@@ -295,6 +295,25 @@ Class ParseService{
 		return trim($line);
 	}
 
+
+
+	# ###################################################################################
+	# Removes stuff from the line, such as periods, apostrophes, commas etc..
+	# ###################################################################################
+	public static function removeExcess($string){
+
+		//Remove commas
+		$string = trim(str_replace(",","",$string));
+
+		//End the string at the last letter
+		preg_match_all('/\p{L}/u', $string, $matches, PREG_OFFSET_CAPTURE);
+
+		$lastLetter = end($matches[0]); // Last match
+		$pos = $lastLetter[1]+1; // position of last letter
+
+		return trim(substr($string,0,$pos));// return substring
+	}
+
 	# Compares
 	public static function compare($haystack,$needle){
 		

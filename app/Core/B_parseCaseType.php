@@ -54,11 +54,6 @@ class B_parseCaseType implements _Contract{
     #########################################################
     public function testLevel1($result){
         return true;
-        /*if(array_search($result,self::$caseTypes)!==false){
-            return true;
-        }else{
-            return false;
-        }*/
     }
     
 

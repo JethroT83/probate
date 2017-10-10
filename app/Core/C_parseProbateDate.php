@@ -10,8 +10,18 @@ class C_parseProbateDate  implements _Contract{
     ################    PARSING FUNCTIONS    ################
     #########################################################
 
+
 	public function parseLevel1(){
-		return Parse::parseKeyWord($this->text,'File Date:', 10, array(5,11));
+
+		$lines  =  Parse::removeShortLines($this->text, 10);
+		foreach($lines as $i => $line){
+			$line = preg_replace("/\s+/","",$line);
+			if(stripos($line,"DateofBirth:") !== false){
+				$e = explode(":",$line);
+				return substr($e[2],0,10);
+			}
+		}
+
 	}
 
 	public function parseLevel2(){

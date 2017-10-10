@@ -12,7 +12,14 @@ class D_parseDeathDate implements _Contract{
     #########################################################
 	public function parseLevel1(){
 
-		return Parse::parseKeyWord($this->text,'Date of Death:', 10, array(5,11));
+		$lines  =  Parse::removeShortLines($this->text, 10);
+		foreach($lines as $i => $line){
+			$line = preg_replace("/\s+/","",$line);
+			if(stripos($line,"DateofBirth:") !== false){
+				$e = explode(":",$line);
+				return substr($e[3],0,10);
+			}
+		}
 	}
 
 	public function parseLevel2(){
