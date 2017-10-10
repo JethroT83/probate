@@ -37,6 +37,8 @@ class ParseController extends Controller{
 			if($test === true){	$result[$column] = $r;
 			}else{				$result[$column] = -1;} // -1 is used because in a CSV it is more clear flag than false, which will be null
 
+			Cache::put("result",$result,2);
+
 		}
 
 		return $result;

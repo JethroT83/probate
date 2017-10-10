@@ -62,14 +62,14 @@ Class ParseService{
         	$line = trim($lines[$i]);
 
             // Remove Spaces
-            #$_line = preg_replace('/\s+/','',$line);
-            #$_keyword = preg_replace('/\s+/','',$keyword);
+            $line = preg_replace('/\s+/','',$line);
+            $keyword = preg_replace('/\s+/','',$keyword);
 
             // Get Position of Keyword
             $pos = stripos($line,$keyword);
 
             if($pos !== false){
-                $pos = $pos + strlen($keyword)+1;
+                $pos = $pos + strlen($keyword);
                 if(is_null($scope)){
                 	return substr($line,$pos);
                 }else{
