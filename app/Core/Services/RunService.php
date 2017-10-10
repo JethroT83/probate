@@ -84,22 +84,9 @@ Class runService{
 		$cmd.= substr($textFile,0,-4) . " ";//Tesseract already puts a .txt when converting the file
 		$cmd.= "-l eng ";
 		#$cmd.= key space
-file_put_contents("cmd.txt",$cmd);
+#file_put_contents("cmd.txt",$cmd);
 		shell_exec($cmd);
 
-		#shell_exec("tesseract storage/app/build_p2.jpg storage/app/build_p2 -l eng");
-
-
-		//return (new \TesseractOCR($imageFile))
-			//->lang('eng')
-			//->tessdataDir(ROOT."storage/app/")
-			//->run();
-
-		#Storage::put($textFile, $text);
-
-#file_put_contents($textFile, $text);
-		// Saves contents to the cache directory
-		#Storage::put($textFile, $text);
 	}
 
 

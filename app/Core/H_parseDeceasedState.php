@@ -13,8 +13,10 @@ class H_parseDeceasedState implements _Contract{
 
     # LEVEL 1 #
     public function parseLevel1(){
-        
-        $string =  Parse::parseKeyWord($this->text,'Address:', null, array(2,5));
+
+        $lines  =  Parse::removeShortLines($this->text, 10);
+        $text   =  Parse::implodeLines($lines);
+        $string =  Parse::parseKeyWord($text,'Address:', null, array(2,5));
 
         // String returns -- Address, City, State Zip
         $e          = explode(",",$string);

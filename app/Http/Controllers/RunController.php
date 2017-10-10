@@ -33,7 +33,7 @@ class RunController extends Controller{
 
 		// Iterate through each page
 		for($page=1;$page<=$pageCount;$page++){
-			
+#echo "\n".__LINE__."--page-->".$page;
 			### CACHE PAGES ###
 			//Cache Page
 			$p = (string)$page."shit";

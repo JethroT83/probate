@@ -6,16 +6,23 @@ class SetupService{
 
 	private static $pdfFile;
 	private static $controlFile;
+	private static $control;
 	private static $txtDir;
 	private static $cacheDir;
 	private static $t;
+	private static $p;
 
 	# Basic Unit Setup
 	public static function setUpUnit(){
 
 		@DEFINE("ROOT",__DIR__."/../"); // Define root directory
 
-		if(is_null(getenv("t"))){self::$t=1;}//If no environmental variable is set, set t=1
+		# Threshold
+		if(getenv("p") == null){self::$p=90;}//If no environmental variable is set, set p=90
+		else{		self::$p = getenv("p");}//Get the data set from the environmental variable p
+
+		# DataSet
+		if(getenv("t") == null){self::$t=1;}//If no environmental variable is set, set t=1
 		else{		self::$t = getenv("t");}//Get the data set from the environmental variable t
 
 		$dir = "dataSet_".self::$t;
@@ -50,7 +57,7 @@ class SetupService{
 
 	# Retrives the Controlled variables from the data set folder
 	public static function getControl(){
-		return json_decode(file_get_contents(self::$controlFile),true);
+		return self::$control =  json_decode(file_get_contents(self::$controlFile),true);
 	}
 
 	# Retrieves the test variables from the app
@@ -75,6 +82,30 @@ class SetupService{
 
 		return $result;
 	}
+
+	public static function grade($exceptions = array()){
+
+		if(count($exceptions) == 0){	$grade = 100; // If there are no exceptions, the grade is 100
+		}else{							$grade = (1 - count($exceptions)/count(self::$control)) * 100;}
+
+		if($grade > self::$p){	$test = true; // If the grade is above the threshold, the passes
+		}else{					$test = false;} // If grade is below the threshold, then it will fail
+
+		echo "\n".$grade;
+		return $test;
+	}
+
+
+	public static function getMessage($exceptions=array(),$cValue=array(),$tValue=array()){
+
+		$message = "Tests exceptions have exceeded the threshold. ";
+		$message.= "\nFailed docket numbers: ".json_encode($exceptions,JSON_PRETTY_PRINT);
+		$message.= "\nControl values: ".json_encode($cValue, JSON_PRETTY_PRINT);
+		$message.= "\nTest values: ".json_encode($tValue,JSON_PRETTY_PRINT);
+
+		return $message;
+	}
+
 
 	#Deletes all the contents in a directory
 	public static function unlink_files(){

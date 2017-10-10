@@ -19,6 +19,8 @@ class M_parseProbateState implements _Contract{
         $lines  = Parse::indexArray($lines);
         $line   = Parse::getProbateLine($lines);
 
+        if($line === false){return false;}
+
         $a = Address::getStateIndex($line);
 
         if($a === false){

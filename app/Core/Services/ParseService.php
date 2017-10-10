@@ -25,6 +25,17 @@ Class ParseService{
 	}
 
 
+	public static function implodeLines($lines=array()){
+
+		$text = "";
+		foreach($lines as $i => $line){
+			$text.= "\n".$line;
+		}
+
+		return $text;
+	}
+
+
 	# ###################################################################################
 	# Generic keyword search function
 	#	text - block of text getting parsed
@@ -120,12 +131,16 @@ Class ParseService{
 				return $i+1;
 			}
 		}
+
+		return false;
 	}
 
 	public static function getProbateLine($lines){
 		
 		$index = self::findProbateLine($lines);
-		return $lines[$index];
+		
+		if($index === false){	return false;
+		}else{					return $lines[$index];}
 	}
 
 

@@ -20,17 +20,16 @@ class L_parseProbateCity implements _Contract{
         $lines  = Parse::indexArray($lines);
         $line   = Parse::getProbateLine($lines);
 
+        if($line === false){return false;}
+
         $a = Address::getStreetEndingIndex($line) + 1;
         $b = Address::getStateIndex($line);
 
-
         if($a === false || $b === false){
-            return false;
+           return false;
         }else{
-
             $c = Parse::sliceLine($line,$a,$b);//Get City in the line
             return trim(str_replace(',','',$c));//Remove the comma, if it is here
-
         }
 
     }

@@ -15,7 +15,7 @@ Class J_parseProbateName implements _Contract{
 		$lines = Parse::indexArray($lines);
 		
 		$line  = Parse::getProbateLine($lines);
-
+		if($line === false){return false;}
 		// Removes all non-proper cased words
 		$line 	= Parse::removeCase($line);
 		$index 	= Parse::findNumber($line, true);
@@ -23,7 +23,6 @@ Class J_parseProbateName implements _Contract{
 		if($index === false){
 			return false;
 		}else{
-
 			return Parse::sliceLine($line,0,$index);
 		}
 
@@ -31,29 +30,7 @@ Class J_parseProbateName implements _Contract{
 
 
 	public function parseLevel2(){
-		/*$lines = explode("\n",$this->text);
 
-		$l = "";
-		$search = false;
-		foreach($lines as $i => $line){
-
-			if(strpos($line,"Relation") !== false){
-				$search = true;
-				continue;
-			}
-
-			if($search === true){
-				$name = parseName::findName($line);
-				if($name !== false){
-					$l = $line;
-					break;
-				}
-			}
-		}
-
-		$p = strpos($l, "am");
-
-		return trim(substr($line,0,$p));*/
 	}
 
 

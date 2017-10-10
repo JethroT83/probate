@@ -59,36 +59,10 @@ class ParseController extends Controller{
 									'PRAddress'=>'K_parseProbateAddress',
 									'PRCity'=>'L_parseProbateCity',
 									'PRState'=>'M_parseProbateState',
-									'PRZip'=>'N_parseProbateZip');
+									'PRZip'=>'N_parseProbateZip'
+									);
 
 		return $this->parseLevel1();
 
 	}	
 }
-
-
-#$docket 			= new \App\Core\A_parseDocket(self::$text);
-/*$caseType 		= new \App\Core\B_parseCaseType($this->text);
-$probateDate 		= new \App\Core\C_parseProbateDate($this->text);
-$deathDate 			= new \App\Core\D_parseDeathDate($this->text);
-$deceasedName 		= new \App\Core\E_parseDeceasedName($this->text);
-$deceasedAddress 	= new \App\Core\F_parseDeceasedAddress($this->text, address::getZip());
-$probateName 		= new \App\Core\J_parseProbateName($this->text);
-$probateAddress 	= new \App\Core\K_parseProbateAddress($this->text, address::getZip());
-*/
-#$out['CaseType'] = $caseType->result;
-#$out['Docket'] = $docket->result;
-/*$out['ProbateDate'] = $probateDate->result;
-$out['DateofDeath'] = $deathDate->result;
-$out['DecdFullNamePulled'] = $deceasedName->result;
-$out['DecdLastAddress'] = $deceasedAddress->result['street'];
-$out['DecdLastCity'] = $deceasedAddress->result['city'];
-$out['DecdLastState'] = $deceasedAddress->result['state'];
-$out['DecdLastZip'] = $deceasedAddress->result['zip'];
-$out['PRFullNamePulled'] = $probateName->result;
-$out['PRAddress'] = $probateAddress->result['street'];
-$out['PRCity'] = $probateAddress->result['city'];
-$out['PRState'] = $probateAddress->result['state'];
-$out['PRZip'] = $probateAddress->result['zip'];*/
-
-#return $out;

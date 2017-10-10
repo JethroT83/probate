@@ -47,26 +47,24 @@ class G_parseDecCityTest extends TestCase{
 		# Get the test data
 		$csv = setup::getTest();
 
-
-		$test = true; // Boolean 
 		$tValue = ""; // Failed test value
 		$cValue = ""; // Failed control value
-		$failedDocket = false; // Failed Docket number
+		$exceptions = array();
 		foreach(self::$control as $docket => $control){
-			$test = true;
 
 			// Fail the test of the control is not equal to the test
 			if( 	!isset($csv[$docket]) 
 				|| 	$csv[$docket][self::$field] != $control[self::$field]){
-				$test = false;
-				$failedDocket = $docket;
-				$cValue = self::$control[$docket][self::$field];
-				$tValue = @$csv[$docket][self::$field]; //error is suppress to see where test fails
-				break;
+				array_push($exceptions,$docket);
+				$cValue[$docket] = self::$control[$docket][self::$field];
+				$tValue[$docket] = @$csv[$docket][self::$field]; //error is suppress to see where test fails
 			}
 		}
 
-		$this->assertTrue($test,"Test failed with docket: ".$failedDocket." control-->" . $cValue . "--test-->".$tValue);
+		$test 		= Setup::grade($exceptions);
+		$message 	= Setup::getMessage($exceptions,$cValue,$tValue);
+
+		$this->assertTrue($test,$message);
 	}
 
 }
