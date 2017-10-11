@@ -15,33 +15,79 @@ class L_parseProbateCity implements _Contract{
 
     # LEVEL 1 #
     public function parseLevel1(){
-        $address = Cache::get('proAddress');
-        return $address['city'];
 
-        /*$lines  = Parse::removeShortLines($this->text,10);
+        //Remove bad lines
+        $lines  = Parse::removeShortLines($this->text,10);
+        
+        //Re-index array
         $lines  = Parse::indexArray($lines);
-        $line   = Parse::getProbateLine($lines);
 
+        //Find line with the probate information
+        $line   = Parse::getProbateLine($lines);
         if($line === false){return false;}
 
-        $a = Address::getStreetEndingIndex($line) + 1;
-        $b = Address::getStateIndex($line);
+        //Find where the address begins
+        $a = Parse::findNumber($line,true);
 
-        if($a === false || $b === false){
-           return false;
-        }else{
-            $c = Parse::sliceLine($line,$a,$b);//Get City in the line
-            return trim(str_replace(',','',$c));//Remove the comma, if it is here
-        }*/
+        //Shorten the line to where the address number starts
+        $shortLine = Parse::sliceLine($line,$a);
 
+        //Count Commas
+        $c = substr_count($shortLine,",");
+
+        switch($c){
+
+            //If there is one comma, it is 'city, state'
+            case 1:
+                $e = explode(",",$shortLine);// break address city, state
+                $addressCity = trim($e[0]);
+
+                $e = explode(" ",$addressCity);// break address city into words
+                $e = array_slice($e,0,-1);// City is at least two words, one can be removed
+
+
+                //Going from right to left, search for a street ending
+                $w = count($e)-1;
+                for($i=$w;$i>0;$i--){
+
+                    $word = $e[$i];
+
+                    if(Address::isStreetEnding($word)){
+ 
+                        //When a street ending is found, get the begining of the short line to the street ending
+                        $city = Parse::sliceLine($addressCity,$i+1);
+
+                        return Address::googleVerify($city,"city",1);
+
+                    }
+                }
+                break;
+
+            case 2:
+
+                $e      = explode(",",$shortLine);// break address apt city, state
+                $aptCity = trim($e[1]);
+
+                $e      = explode(" ",$aptCity);// break address city into words
+                $e      = array_slice($e,1);//Remove apartment part
+
+                $city   = implode(" ",$e); // implode back into a string
+
+                return Address::googleVerify($city,"city",1);
+
+                break;
+        }
+
+
+        return false;
     }
-    
+
+
     # LEVEL 2 #
     public function parseLevel2(){
 
 
     }
-
 
 
     #########################################################

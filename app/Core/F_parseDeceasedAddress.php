@@ -10,11 +10,8 @@ class F_parseDeceasedAddress implements _Contract{
     ################    PARSING FUNCTIONS    ################
     #########################################################
 	public function parseLevel1(){
-		$address = Cache::get('proAddress');
-#echo "\n\n".__LINE__."--address-->".json_encode($address,JSON_PRETTY_PRINT);
-		return $address['street'];
 
-		/*$lines  =  Parse::removeShortLines($this->text, 10);
+		$lines  =  Parse::removeShortLines($this->text, 10);
 
 		foreach($lines as $i => $line){
 			$pos = stripos($line,'address:');
@@ -42,7 +39,7 @@ class F_parseDeceasedAddress implements _Contract{
 		}
 
 
-		return $address;*/
+		return $address;
 	}
 	
 

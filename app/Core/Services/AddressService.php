@@ -4,17 +4,8 @@ use \App\Core\Services\ParseService as Parse;
 use Illuminate\Support\Facades\Cache as Cache;
 class AddressService{
 
-	#############################################################################################
-	###################################		STATES 		#########################################
-	#############################################################################################
-	public static $states = array('AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA',
-						'MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN',
-						'TX','UT','VT','VA','WA','WV','WI','WY','AS','DC','FM','GU','MH','MP','PW','PR','VI','AE','AA','AE','AE',
-						'AE','AP');
 
-
-
-
+	###################################	STREET ENDINGS	#########################################
 	public static $streetEndings = array('alley',	'annex',	'arcade',	'avenue',	'bayoo',	'beach',	'bend',	'bluff',	'bluffs',	'bottom',	'boulevard',	'branch',	'bridge',	'brook',	'brooks',	'burg',	'burgs',	'bypass',	'camp',	'canyon',	'cape',	'causeway',	'center',	'centers', 'cir',	'circle',	'circles',	'cliff',	'cliffs',	'club',	'common',	'corner',	'corners',	'course',	'court',	'courts',	'cove',	'coves',	'creek',	'crescent',	'crest',	'crossing',	'crossroad',	'curve',	'dale',	'dam',	'divide',	'drive',	'drives',	'estate',	'estates',	'expressway',	'extension',	'extensions',	'fall',	'falls',	'ferry',	'field',	'fields',	'flat',	'flats',	'ford',	'fords',	'forest',	'forge',	'forges',	'fork',
 						'forks',	'fort',	'freeway',	'garden',	'gardens',	'gateway',	'glen',	'glens',	'green',	'greens',	'grove',	'groves',	'harbor',	'harbors',	'haven',	'heights',	'highway',	'hill',	'hills',	'hollow',	'inlet',	'interstate',	'island',	'islands',	'isle',	'junction',	'junctions',	'key',	'keys',	'knoll',	'knolls',	'lake',	'lakes',	'land',	'landing',	'lane',	'light',	'lights',	'loaf',	'lock',	'locks',	'lodge',	'loop',	'mall',	'manor',	'manors',	'meadow',	'meadows',	'mews',	'mill',	'mills',	'mission',	'moorhead',	'motorway',	'mount',	'mountain',	'mountains','neck',	'orchard',	'oval',	'overpass',	'park',	'parks',	'parkway',	'parkways',	'pass',
 						'passage',	'path','pike',	'pine',	'pines',	'place',	'plain',	'plains',	'plaza',	'point',	'points',	'port',	'ports',	'prairie',	'radial',	'ramp',	'ranch',	'rapid',	'rapids',	'rest',	'ridge',	'ridges',	'river',	'road',	'roads',	'route',	'row',	'rue',	'run',	'shoal',	'shoals',	'shore',	'shores',	'skyway',	'spring',	'springs',	'spur',	'spurs',	'square',	'squares',	'station',	'stream',	'street',	'streets',	'summit',	'terrace',	'throughway',	'trace',	'track',	'trail',	'tunnel',	'turnpike',	'underpass',	'union',	'unions',	'valley',	'valleys',	'viaduct',	'view',	'views',	'village',	'villages',	'ville',	'vista',	'walk',	'walks',	'wall',	'way',	'ways',	'well',	'wells',
@@ -23,6 +14,15 @@ class AddressService{
 						'vlys',	'via',	'vw',	'vws',	'vlg',	'vlgs',	'vl',	'vis',	'walk',	'walk',	'wall',	'way',	'ways',	'wl',	'wls');
 
 	
+	###################################	TOWN ENDINGS	#########################################
+	public static $townEndings = array("township","borough","city");
+
+
+	###################################		STATES 		#########################################
+	public static $states = array('AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA',
+						'MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN',
+						'TX','UT','VT','VA','WA','WV','WI','WY','AS','DC','FM','GU','MH','MP','PW','PR','VI','AE','AA','AE','AE',
+						'AE','AP');
 
 	# State
 	public static  function getStateIndex($line,$i=0){
@@ -34,7 +34,7 @@ class AddressService{
 			return false;
 		}else{
 		    $pIndex = $index + $i;
-			$state = Parse::sliceLine($line,$index,$index+1);
+			$state = Parse::sliceLine($line,$index,$index);
 
 			if(strlen($state) == 2 && ctype_alpha($state) && strtoupper($state) == $state){
 				
@@ -145,7 +145,7 @@ class AddressService{
 	}
 
 
-	public static function getDeceasedAddress($text){
+	public static function getDeceasedAddressString($text){
 
 		$lines  =  Parse::removeShortLines($text, 10);
 
@@ -163,18 +163,26 @@ class AddressService{
 		if($addressString === false){
 			return false;
 		}else{
+			return $addressString;
+		}
+	}
 
-			$r = self::googleAddressLookup($addressString);
-#echo "\n\n".__LINE__."--addressString-->".$addressString."--r->".json_encode($r,JSON_PRETTY_PRINT);		
-			//return self::googleAddressLookup($addressString);
-			return $r;
+
+	public static function getDeceasedAddress($text){
+
+		self::getDeceasedAddressString($text);
+
+		if($addressString === false){
+			return false;
+		}else{
+			return self::googleAddressLookup($addressString);
 		}
 	}
 
 
 	# ########################################################################
-	#	Function Why is supposed to satify the unit, despite the OCR doing
-	#	a terrible job.  Seriously, how is a state and zip missed
+	#	Function Why is supposed to satify the unit tests, despite the OCR doing
+	#	a terrible job.  Seriously, how is a state and zip code missing
 	# ########################################################################
 	private static function why($line){
 		$e = explode(",",$line);
@@ -183,7 +191,51 @@ class AddressService{
 	} 
 
 
-	public static function getProbateAddress($text){
+	# ########################################################################
+	# Occasionally, the state and zip code is on following line
+	# ########################################################################
+	public static function retrieveStateZipLine($text){
+
+		//Worse case there is a zip code of 5 characters,
+		//so lines must be 5 characters of more
+		$lines 	= Parse::removeShortLines($text,5);
+
+		//Re-index array
+        $lines  = Parse::indexArray($lines);
+
+		//Finds the probate line
+		$index = Parse::findProbateLine($lines);
+
+		if($index !== false){
+			
+			//If probate line is found, a lost state
+			// and zip might be on the next line
+			$index++;
+
+			$line = $lines[$index];
+
+			$a = self::findState($line);//Find State
+			$b = self::findZip($line);//Find Zip
+
+			$result = array();
+			if($a !== false){
+				$result['state'] = Parse::sliceLine($line,$a,$a);
+			} 
+
+			if($b !== false){
+				$result['zip'] = Parse::sliceLine($line,$b,$b);
+			} 
+
+			return $result;
+		}
+
+		return false;
+
+	}
+
+
+
+	public static function getProbateAddressString($text){
 
 		//Remove bad lines
 		$lines 	= Parse::removeShortLines($text,10);
@@ -193,6 +245,7 @@ class AddressService{
 
 		//Find line with the probate information
 		$line   = Parse::getProbateLine($lines);
+	
 		if($line === false){return false;}
 
 		//Find where the address begins
@@ -206,28 +259,63 @@ class AddressService{
 		}
 
 		if($index === false){return false;}
-
 		$b = $index;
 
-		/*$b = self::findZip($line);
-
-		//If the Zip code cannot be found, look for a state
-		if($b === false){
-			$b = self::findState($line);
-			if($b === false){
+		//Shorten the line to where the address number starts
+		return Parse::sliceLine($line,$a,$b);
+	}
 
 
-				//If a state cannot be found, then give up on life
-				if($b === false){return false;}
-			}
-		}*/
+	public static function getProbateAddress($text){
 
 		//Shorten the line to where the address number starts
-		$addressString = Parse::sliceLine($line,$a,$b);
+		$addressString = self::getProbateAddressString($text);
 
 		//Get the Google information
 		return self::googleAddressLookup($addressString);
 	}
+
+
+	# ########################################################################
+	#	Google Geolocate is only as good as the information inputted
+	#   Many times the OCR screws up real bad and Google simply does 
+	#   have enough information to rememdy it.  This function is a
+	# 	test, which will determine if the information from Google is good.
+	# ########################################################################
+	public static function testGoogleAddress($text,$type){
+
+		if($type == 0){	$googleData = Cache::get('decAddress');  //Deceased Address
+						$addressString = self::getDeceasedAddressString($text);
+
+		}else{			$googleData = Cache::get('proAddress');
+						$addressString = self::getProbateAddressString($text);}//Probate Address
+
+		// Check street
+		$pe = explode(" ",$addressString);
+		$ge = explode(" ",$googleData['street']);
+
+		//Verify Same address number
+		if(		$pe[0] != $ge[0] //A valid google address always starts the same
+			|| 	(!isset($ge[1]) || !isset($pe[1])) // There needs to be something to compare
+			|| 	( Parse::compareStrings($pe[1],$ge[1])=== false) // Street name can be only slightly different
+			){return false;} 
+
+		//Check city
+		$test 	= false;
+		$e 		= explode(" ",$googleData['city']);
+		$city 	= $e[0];
+		foreach($pe as $i => $word){
+			if(Parse::compareStrings($word,$city) && $test===false){
+				$test=true;
+			}
+		}
+
+		//Verified that Google's address is accurate
+		if($test === true){ return true;}
+
+		return false;
+	}
+
 
 
 	# ########################################################################
@@ -245,36 +333,51 @@ class AddressService{
 		#if(strlen($parsed) == 0){return false;}
 		if($type == 0){	$googleData = Cache::get('decAddress');  //Deceased Address
 		}else{			$googleData = Cache::get('proAddress');}//Probate Address
-	
 		// The locale parameters correspond to the array in function googleAddressLookup
-		$googleAddress = $googleData[$locale];
+		if(isset($googleData[$locale])){
+			$googleAddress = $googleData[$locale];
+		}else{
+			$googleAddress = false;
+		}
 
 		// If Google doesn't return a result, then the parsed value is returned
 		if(strlen($googleAddress) == 0){return $parsed;}
 
 		switch($locale){
 
-			case 0:
+			case "street":
 				$pe = explode(" ",$parsed);
 				$ge = explode(" ",$googleAddress);
-echo "\n\n".__LINE__."--pe-->".json_encode($pe,JSON_PRETTY_PRINT);
-echo "\n\n".__LINE__."--ge-->".json_encode($ge,JSON_PRETTY_PRINT);
-
 				
-				//Given address both start the same,
-				if(		$pe[0] == $ge[0] 
-				//if the street name google has is slightly different,
-					 && (
-					 		(	Parse::compareStrings($pe[1],$ge[1]) &&	$pe[1] != $ge[1] ) 
-					 	|| 	(	Parse::compareStrings($pe[1],$ge[1]) &&	count($pe) != count($ge))
-					 	)
-				){
-					//it tends to be the better choice
+				// Use Google if the streets names are off
+				// or count of the words in the street name are different
+				if($pe[1] != $ge[1] || count($pe) != count($ge)){
 					return $googleAddress;
-
 				}else{
 					return $parsed;
 				}
+				break;
+
+			case "city":
+
+				$pe = explode(" ",$parsed);
+				$ge = explode(" ",$googleAddress);
+
+				//Towns may have two words...  sometimes... and comparing the first word is fine
+				if(		$pe[0] != $ge[0]
+					//Parsed sometimes comes back with "Township" or "Borough"
+					||  in_array(strtolower($pe[0]),self::$streetEndings) ){
+
+					return $googleAddress;
+				}else{
+					return $parsed;
+				}
+
+			case "state":
+				return $googleAddress;
+
+			case "zip":
+				 return $googleAddress;
 
 		}
 		

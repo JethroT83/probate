@@ -16,10 +16,7 @@ class I_parseDeceasedZip implements _Contract{
     # LEVEL 1 #
     public function parseLevel1(){
 
-        $address = Cache::get('proAddress');
-        return $address['zip'];
-
-        /*$lines  =  Parse::removeShortLines($this->text, 10);
+        $lines  =  Parse::removeShortLines($this->text, 10);
 
         foreach($lines as $i => $line){
             $pos = stripos($line,'address:');
@@ -55,7 +52,7 @@ class I_parseDeceasedZip implements _Contract{
         #    return false;
         #}
         
-        return $zip;*/
+        return $zip;
     }
     
     # LEVEL 2 #

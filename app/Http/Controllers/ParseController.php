@@ -19,11 +19,16 @@ class ParseController extends Controller{
 	public function parseLevel1(){
 
 		##	Address Service	##
-		#$decAddress = Address::getDeceasedAddress(self::$text);
+		#$decAddress  = Address::getDeceasedAddress(self::$text);
 		$proAddress  = Address::getProbateAddress(self::$text);
 
 		#Cache::put('decAddress',$decAddress,10);
 		Cache::put('proAddress',$proAddress,10);
+
+		// If the information Google returns is bad, then there is no need for it.
+		if(Address::testGoogleAddress(self::$text,0)){Cache::delete('decAddress');}
+		if(Address::testGoogleAddress(self::$text,1) === false){Cache::delete('proAddress');}
+
 
 		foreach(self::$parseClasses as $column => $parseClass){
 
@@ -62,14 +67,14 @@ class ParseController extends Controller{
 									'DateofDeath'=>'D_parseDeathDate',
 									'DecdFullNamePulled'=>'E_parseDeceasedName',
 									'DecdLastAddress'=>'F_parseDeceasedAddress',
-									#'DecdLastCity'=>'G_parseDeceasedCity',
-									#'DecdLastState'=>'H_parseDeceasedState',
-									#'DecdLastZip'=>'I_parseDeceasedZip',
+									'DecdLastCity'=>'G_parseDeceasedCity',
+									'DecdLastState'=>'H_parseDeceasedState',
+									'DecdLastZip'=>'I_parseDeceasedZip',
 									'PRFullNamePulled'=>'J_parseProbateName',
-									'PRAddress'=>'K_parseProbateAddress'#,
-									#'PRCity'=>'L_parseProbateCity',
-									#'PRState'=>'M_parseProbateState',
-									#'PRZip'=>'N_parseProbateZip'
+									'PRAddress'=>'K_parseProbateAddress',
+									'PRCity'=>'L_parseProbateCity',
+									'PRState'=>'M_parseProbateState',
+									'PRZip'=>'N_parseProbateZip'
 									);
 
 		return $this->parseLevel1();

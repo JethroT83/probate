@@ -23,9 +23,7 @@ class E_parseDeceasedName implements _Contract{
 
 
 	public function parseLevel2(){
-		/*$p = new parseDeceasedName($this->result);
-		$spaces = $p->countSpaces();
-		if(*/
+
 	}
 
 
@@ -34,13 +32,6 @@ class E_parseDeceasedName implements _Contract{
     ################    TESTING FUNCTIONS    ################
     #########################################################
 	public function testLevel1($result){
-		/*$p = new parseDeceasedName($this->result);
-		$spaces = $p->countSpaces();
-		if($space == 1){
-			return 1;
-		else{
-			return -1;
-		}*/
 		return true;
 	}
 	

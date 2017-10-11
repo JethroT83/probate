@@ -310,10 +310,10 @@ Class ParseService{
 
 		$e = explode(' ',$line);
 
-        if(is_null($b)){$b = count($e);}
+        if(is_null($b)){$b = count($e)-1;}
 
 		$line = '';
-		for($i=$a;$i<$b;$i++){
+		for($i=$a;$i<=$b;$i++){
 			$line.=$e[$i].' ';
 		}
 
@@ -347,36 +347,13 @@ Class ParseService{
 	public static function compareStrings($a,$b){
 
 		$diff = levenshtein($a,$b);
+		if(strlen($a)==0 || strlen($b)==0){return false;}
 		$percentage = 1-($diff/strlen($a));
 
 		if($percentage >= .6){	return true;
 		}else{					return false;}
 
 	}
-
-
-
-	# Compares
-	/*public static function compare($haystack,$needle){
-		
-		//Lists out what letters might be off
-		$changes = array("l"=>"i");
-
-		//Start with a case insentive strpos
-		if(stripos($haystack,$needle) !== false){
-			return stripos($haystack,$needle);
-		}else{
-		//If the strpos fail, the needle will be changed, and try again
-			foreach($changes as $find => $replace){
-				$haystack = str_replace($find,$replace, $haystack);
-				if(stripos($haystack,$needle) !== false){
-					return stripos($haystack,$needle);
-				}
-			}
-		}
-
-		return false;
-	}*/
 
 
 	# Converts an array to CSV

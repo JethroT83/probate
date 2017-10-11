@@ -16,22 +16,25 @@ class N_parseProbateZip implements _Contract{
     # LEVEL 1 #
     public function parseLevel1(){
 
-        $address = Cache::get('proAddress');
-        return $address['zip'];
-
-        /*$lines  = Parse::removeShortLines($this->text,10);
+        $lines  = Parse::removeShortLines($this->text,10);
         $lines  = Parse::indexArray($lines);
         $line   = Parse::getProbateLine($lines);
 
         if($line === false){return $line;}
 
-        $a = Address::getStateIndex($line);
+        $a = Address::findZip($line);
 
         if($a === false){
-            return false;
+            $zLine = Address::retrieveStateZipLine($this->text);
+            if(isset($zLine['zip'])){
+                return $zLine['zip'];
+            }else{
+                return Address::googleVerify(null,'zip',1);
+            }
+
         }else{
-            return Parse::sliceLine($line,$a+1,$a+2);//Get City in the line
-        }*/
+            return Parse::sliceLine($line,$a,$a);//Get City in the line
+        }
     }
     
     # LEVEL 2 #

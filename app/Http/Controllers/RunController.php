@@ -19,10 +19,6 @@ class RunController extends Controller{
 		$e = explode("/",$this->file);
 		$this->fname = substr(end($e),0,-4);
 		Cache::put('fname', $this->file, 30);
-
-
-		//Runs the Code
-		#$this->onController();
 	}
 
 
@@ -33,7 +29,7 @@ class RunController extends Controller{
 
 		// Iterate through each page
 		for($page=1;$page<=$pageCount;$page++){
-#echo "\n".__LINE__."--page-->".$page;
+
 			### CACHE PAGES ###
 			//Cache Page
 			$p = (string)$page."shit";
@@ -50,8 +46,6 @@ class RunController extends Controller{
 			$txtFname = "/var/www/probate/storage/app/{$this->fname}_p{$page}.txt";
 			Cache::put('textFile',$textFile,20);
 
-			#$txt = file_get_contents($textFile);
-			#if(strlen($txt) !=0 ){die('fuck');}
 			// If there is a text file in cache, use it
 			if(is_file($textFile)){
 				#$text = Storage::get($txtFname);
@@ -71,10 +65,7 @@ class RunController extends Controller{
 			}
 			
 			//cache result-- the data will be used in parsing functions
-			#$text = Storage::get($textFile);
 			$out[$page] = run::parse($text);
-			#Cache::put("out",$out,20);
-
 		}
 
 		//Converts the object to a csv file

@@ -14,10 +14,8 @@ class H_parseDeceasedState implements _Contract{
 
     # LEVEL 1 #
     public function parseLevel1(){
-        $address = Cache::get('proAddress');
-        return $address['state'];
 
-        /*$lines  =  Parse::removeShortLines($this->text, 10);
+        $lines  =  Parse::removeShortLines($this->text, 10);
 
         foreach($lines as $i => $line){
             $pos = stripos($line,'address:');
@@ -51,7 +49,7 @@ class H_parseDeceasedState implements _Contract{
             return $state;
         }else{
             return false;
-        }*/
+        }
     }
     
     # LEVEL 2 #
