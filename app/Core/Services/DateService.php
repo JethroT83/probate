@@ -1,46 +1,22 @@
 <?php
 namespace App\Core\Services;
-class DateService{
-	public function __construct($result){
-		$this->result = $result;
-	}
-	
-	#This eliminates spaces in string
-	public function testSpace(){
-		$string = "";
-		for($x=0;$x<=strlen($this->result);$x++){
-			$l = substr($this->result, $x);
-			
-			if(ord($l) ==32){
-				return -1;
-			}
-		}
-		return 1;
-	
-	}
-	
-	#This is eliminate all the spaces
-	public function parseNoSpace(){
-		$string = "";
-		for($x=0;$x<=10;$x++){
-			$l = substr($this->result, $x,1);
-			
-			if(ord($l) !=32){
-				$string .= $l;
-			}
-		}
-		return $string;
-	}
-	
-	public function findEnd($result){
-		for($x=strlen($result);$x>0;$x--){
-			$l = substr($result, $x);
-			if(ord($l) ==47){
-				return substr($result, 0,$x+4);
-			}
-		}
-	}
 
+class DateService{
+
+	public static function getProbateDateLine($lines=array()){
+
+		foreach($lines as $i => $line){
+			$line = preg_replace("/\s+/","",$line);
+			
+			// The OCR is never perfect, therefore this function will look for several things
+			if(	   stripos($line,"dateofbirth:") 	!== false
+				|| stripos($line,"filedate:") 		!== false
+				|| stripos($line,"dateofdeath:") 	!== false){
+				
+				return $line;
+			}
+		}
+	}
 }
 
 ?>

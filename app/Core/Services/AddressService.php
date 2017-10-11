@@ -1,11 +1,21 @@
 <?PHP
 namespace App\Core\Services;
 use \App\Core\Services\ParseService as Parse;
+use Illuminate\Support\Facades\Cache as Cache;
 class AddressService{
 
+	#############################################################################################
+	###################################		STATES 		#########################################
+	#############################################################################################
+	public static $states = array('AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA',
+						'MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN',
+						'TX','UT','VT','VA','WA','WV','WI','WY','AS','DC','FM','GU','MH','MP','PW','PR','VI','AE','AA','AE','AE',
+						'AE','AP');
 
 
-	public static $streetEndings = array('alley',	'annex',	'arcade',	'avenue',	'bayoo',	'beach',	'bend',	'bluff',	'bluffs',	'bottom',	'boulevard',	'branch',	'bridge',	'brook',	'brooks',	'burg',	'burgs',	'bypass',	'camp',	'canyon',	'cape',	'causeway',	'center',	'centers',	'circle',	'circles',	'cliff',	'cliffs',	'club',	'common',	'corner',	'corners',	'course',	'court',	'courts',	'cove',	'coves',	'creek',	'crescent',	'crest',	'crossing',	'crossroad',	'curve',	'dale',	'dam',	'divide',	'drive',	'drives',	'estate',	'estates',	'expressway',	'extension',	'extensions',	'fall',	'falls',	'ferry',	'field',	'fields',	'flat',	'flats',	'ford',	'fords',	'forest',	'forge',	'forges',	'fork',
+
+
+	public static $streetEndings = array('alley',	'annex',	'arcade',	'avenue',	'bayoo',	'beach',	'bend',	'bluff',	'bluffs',	'bottom',	'boulevard',	'branch',	'bridge',	'brook',	'brooks',	'burg',	'burgs',	'bypass',	'camp',	'canyon',	'cape',	'causeway',	'center',	'centers', 'cir',	'circle',	'circles',	'cliff',	'cliffs',	'club',	'common',	'corner',	'corners',	'course',	'court',	'courts',	'cove',	'coves',	'creek',	'crescent',	'crest',	'crossing',	'crossroad',	'curve',	'dale',	'dam',	'divide',	'drive',	'drives',	'estate',	'estates',	'expressway',	'extension',	'extensions',	'fall',	'falls',	'ferry',	'field',	'fields',	'flat',	'flats',	'ford',	'fords',	'forest',	'forge',	'forges',	'fork',
 						'forks',	'fort',	'freeway',	'garden',	'gardens',	'gateway',	'glen',	'glens',	'green',	'greens',	'grove',	'groves',	'harbor',	'harbors',	'haven',	'heights',	'highway',	'hill',	'hills',	'hollow',	'inlet',	'interstate',	'island',	'islands',	'isle',	'junction',	'junctions',	'key',	'keys',	'knoll',	'knolls',	'lake',	'lakes',	'land',	'landing',	'lane',	'light',	'lights',	'loaf',	'lock',	'locks',	'lodge',	'loop',	'mall',	'manor',	'manors',	'meadow',	'meadows',	'mews',	'mill',	'mills',	'mission',	'moorhead',	'motorway',	'mount',	'mountain',	'mountains','neck',	'orchard',	'oval',	'overpass',	'park',	'parks',	'parkway',	'parkways',	'pass',
 						'passage',	'path','pike',	'pine',	'pines',	'place',	'plain',	'plains',	'plaza',	'point',	'points',	'port',	'ports',	'prairie',	'radial',	'ramp',	'ranch',	'rapid',	'rapids',	'rest',	'ridge',	'ridges',	'river',	'road',	'roads',	'route',	'row',	'rue',	'run',	'shoal',	'shoals',	'shore',	'shores',	'skyway',	'spring',	'springs',	'spur',	'spurs',	'square',	'squares',	'station',	'stream',	'street',	'streets',	'summit',	'terrace',	'throughway',	'trace',	'track',	'trail',	'tunnel',	'turnpike',	'underpass',	'union',	'unions',	'valley',	'valleys',	'viaduct',	'view',	'views',	'village',	'villages',	'ville',	'vista',	'walk',	'walks',	'wall',	'way',	'ways',	'well',	'wells',
 						'aly',	'anx',	'arc',	'ave',	'byu',	'bch',	'bnd',	'blf',	'blfs',	'btm',	'blvd',	'br',	'brg',	'brk',	'brks',	'bg',	'bgs',	'byp',	'cp',	'cyn',	'cpe',	'cswy',	'ctr',	'ctrs',	'cir',	'cirs',	'clf',	'clfs',	'clb',	'cmn',	'cor',	'cors',	'crse',	'ct',	'cts',	'cv',	'cvs',	'crk',	'cres',	'crst',	'xing',	'xrd',	'curv',	'dl',	'dm',	'dv',	'dr',	'drs',	'est',	'ests',	'expy',	'ext',	'exts',	'fall',	'fls',	'fry',	'fld',	'flds',	'flt',	'flts',	'frd',	'frds',	'frst',	'frg',	'frgs',	'frk',	'frks',	'ft',	'fwy',	'gdn',	'gdns',	'gtwy',	'gln',	'glns',	'grn',	'grns',	'grv',	'grvs',	'hbr',	'hbrs',	'hvn',	'hts',	'hwy',	'hl',	'hls',	'holw',	'inlt',	'i',	'is',	'iss',	'isle',	'jct',	'jcts',	'ky',	'kys',	'knl',	'knls',
@@ -40,10 +50,42 @@ class AddressService{
 	#Address
 	public static function getStreetEndingIndex($line){
 
+		// Street ending index must be 2 word from the number
+		$a = Parse::findNumber($line,true);
 		$e = explode(' ',$line);
 
-		foreach($e as $index => $a){
-			if(in_array(strtolower($a),self::$streetEndings)){
+		foreach($e as $index => $word){
+			if($index > $a){
+				if(in_array(strtolower($word),self::$streetEndings)){
+					return $index;
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+	public static function isStreetEnding($string){
+
+		if(substr($string,-1) == "."){
+			$string = substr($string,0,-1);
+		}
+
+		if(in_array(strtolower($string),self::$streetEndings)){	
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+
+	public static function findState($string){
+
+		$e = explode(" ",$string);
+	
+		foreach($e as $index => $word){
+			if(in_array($word,self::$states)){
 				return $index;
 			}
 		}
@@ -51,311 +93,193 @@ class AddressService{
 		return false;
 	}
 
-	# Set Zip
-	private static function setZip(){
 
-		/*$get = "SELECT * FROM probate.zip";
-		$data = DB::($get);
-		
-		$result = array();
-		foreach($data as $i => $info){
-			$result[$info['zip']]['city'] = $info['primary_city'];
-			$result[$info['zip']]['city2'] = $info['acceptable_cities'];
-			$result[$info['zip']]['state'] = $info['state'];
-		}
+	public static function findZip($string){
 
-		self::$zip = $result;*/
-	}
+		$e = explode(" ",$string);
 
-
-	# Returns All the Zip Codes Across the 
-	public static function getZip(){
-
-		if(count(self::$zip) == 0){self::setZip();}
-
-		return self::$zip;
-	}
-
-
-
-	
-	public function countCommas(){
-		$count = 0;
-		$length = strlen($this->result);
-		for($x=0;$x<$length;$x++){
-			$l = substr($this->result,$x,1);
-			if(ord($l) == 44){
-				$count++;
+		foreach($e as $index => $word){
+			if(preg_match('/(^\d{5}(?:[\s]?[-\s][\s]?\d{4})?$)/',$word)){
+				return $index;
 			}
 		}
-		return $count;
+
+		return false;
 	}
-	
-	
-	//## Street
-	public function streetFinderLevel1(){
-		if($this->countCommas() == 2){
-			$array = explode(",",$this->result);
-			$city = $array[0];
+
+
+	# ########################################################################
+	#	Sends cURL request to Google's API
+	#	The address string should be 'Street City, State Zip'
+	# ########################################################################
+	public static function googleAddressLookup($addressString){
+
+		$key = "AIzaSyBtaQ93f1eXlvE8JiUkHF7hsjiJzejUrMQ";
+		$addressString = urlencode($addressString);
+		
+		$url = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+		$url.= $addressString;
+		$url.= "&key=".$key;
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$geoloc = json_decode(curl_exec($ch), true);
+
+		if (count($geoloc['results']) > 0 ) {
+			$a = $geoloc['results'][0]['formatted_address'];
+
+			$e = explode(",",$a);
+			$stateZip = trim($e[2]);
+			$ee = explode(" ",$stateZip);
+			$result['street'] = trim($e[0]);
+			$result['city']   = trim($e[1]);
+			$result['state']  = $ee[0];
+			$result['zip']    = $ee[1];
+			$result['country']= trim($e[3]);
+
+			return $result;
 		}else{
-			return -1;
-		}
-		return $city;
-	}
-	
-	public function streetFinderLevel2($city){
-		
-		//echo "String--->". $this->result;
-		//echo "city---->". $city;
-		
-		if(stripos($this->result, $city) != false){
-			$pos = strpos(strtolower($this->result), strtolower($city));
-			return substr($this->result, 0, $pos);
-		}else{
-			return -1;
+			return false;
 		}
 	}
-	
-	public function streetFinderLevel3($state){
-		$endings = array('alley',	'annex',	'arcade',	'avenue',	'bayoo',	'beach',	'bend',	'bluff',	'bluffs',	'bottom',	'boulevard',	'branch',	'bridge',	'brook',	'brooks',	'burg',	'burgs',	'bypass',	'camp',	'canyon',	'cape',	'causeway',	'center',	'centers',	'circle',	'circles',	'cliff',	'cliffs',	'club',	'common',	'corner',	'corners',	'course',	'court',	'courts',	'cove',	'coves',	'creek',	'crescent',	'crest',	'crossing',	'crossroad',	'curve',	'dale',	'dam',	'divide',	'drive',	'drives',	'estate',	'estates',	'expressway',	'extension',	'extensions',	'fall',	'falls',	'ferry',	'field',	'fields',	'flat',	'flats',	'ford',	'fords',	'forest',	'forge',	'forges',	'fork',
-						'forks',	'fort',	'freeway',	'garden',	'gardens',	'gateway',	'glen',	'glens',	'green',	'greens',	'grove',	'groves',	'harbor',	'harbors',	'haven',	'heights',	'highway',	'hill',	'hills',	'hollow',	'inlet',	'interstate',	'island',	'islands',	'isle',	'junction',	'junctions',	'key',	'keys',	'knoll',	'knolls',	'lake',	'lakes',	'land',	'landing',	'lane',	'light',	'lights',	'loaf',	'lock',	'locks',	'lodge',	'loop',	'mall',	'manor',	'manors',	'meadow',	'meadows',	'mews',	'mill',	'mills',	'mission',	'moorhead',	'motorway',	'mount',	'mountain',	'mountains','neck',	'orchard',	'oval',	'overpass',	'park',	'parks',	'parkway',	'parkways',	'pass',
-						'passage',	'path','pike',	'pine',	'pines',	'place',	'plain',	'plains',	'plaza',	'point',	'points',	'port',	'ports',	'prairie',	'radial',	'ramp',	'ranch',	'rapid',	'rapids',	'rest',	'ridge',	'ridges',	'river',	'road',	'roads',	'route',	'row',	'rue',	'run',	'shoal',	'shoals',	'shore',	'shores',	'skyway',	'spring',	'springs',	'spur',	'spurs',	'square',	'squares',	'station',	'stream',	'street',	'streets',	'summit',	'terrace',	'throughway',	'trace',	'track',	'trail',	'tunnel',	'turnpike',	'underpass',	'union',	'unions',	'valley',	'valleys',	'viaduct',	'view',	'views',	'village',	'villages',	'ville',	'vista',	'walk',	'walks',	'wall',	'way',	'ways',	'well',	'wells',
-						'aly',	'anx',	'arc',	'ave',	'byu',	'bch',	'bnd',	'blf',	'blfs',	'btm',	'blvd',	'br',	'brg',	'brk',	'brks',	'bg',	'bgs',	'byp',	'cp',	'cyn',	'cpe',	'cswy',	'ctr',	'ctrs',	'cir',	'cirs',	'clf',	'clfs',	'clb',	'cmn',	'cor',	'cors',	'crse',	'ct',	'cts',	'cv',	'cvs',	'crk',	'cres',	'crst',	'xing',	'xrd',	'curv',	'dl',	'dm',	'dv',	'dr',	'drs',	'est',	'ests',	'expy',	'ext',	'exts',	'fall',	'fls',	'fry',	'fld',	'flds',	'flt',	'flts',	'frd',	'frds',	'frst',	'frg',	'frgs',	'frk',	'frks',	'ft',	'fwy',	'gdn',	'gdns',	'gtwy',	'gln',	'glns',	'grn',	'grns',	'grv',	'grvs',	'hbr',	'hbrs',	'hvn',	'hts',	'hwy',	'hl',	'hls',	'holw',	'inlt',	'i',	'is',	'iss',	'isle',	'jct',	'jcts',	'ky',	'kys',	'knl',	'knls',
-						'lk',	'lks',	'land',	'lndg',	'ln',	'lgt',	'lgts',	'lf',	'lck',	'lcks',	'ldg',	'loop',	'mall',	'mnr',	'mnrs',	'mdw',	'mdws',	'mews',	'ml',	'mls',	'msn',	'mhd',	'mtwy',	'mt',	'mtn',	'mtns',	'nck',	'orch',	'oval',	'opas',	'park',	'park',	'pkwy',	'pkwy',	'pass',	'psge',	'path',	'pike',	'pne',	'pnes',	'pl',	'pln',	'plns',	'plz',	'pt',	'pts',	'prt',	'prts',	'pr',	'radl',	'ramp',	'rnch',	'rpd',	'rpds',	'rst',	'rdg',	'rdgs',	'riv',	'rd',	'rds',	'rte',	'row',	'rue',	'run',	'shl',	'shls',	'shr',	'shrs',	'skwy',	'spg',	'spgs',	'spur',	'spur',	'sq',	'sqs',	'sta',	'strm',	'st',	'sts',	'smt',	'ter',	'trwy',	'trce',	'trak',	'trl',	'tunl',	'tpke',	'upas',	'un',	'uns',	'vly',
-						'vlys',	'via',	'vw',	'vws',	'vlg',	'vlgs',	'vl',	'vis',	'walk',	'walk',	'wall',	'way',	'ways',	'wl',	'wls');
-		
-		$pos1 = strpos($this->result, $state);
-		$string = substr($this->result, 0, $pos1);
-		$words = explode(" ",$string);
-		
-		foreach($words as $i => $word){
-			$streetQ = array();
-			$k = 0;
-			$word = trim(strtolower($word));
-			foreach($endings as $j => $ending){
-				$ending = trim(strtolower($ending));
-				if($word == $ending){
-					//echo "This matches!!";
-					//echo substr($string, 0,strpos($string,$word)+strlen($word));
-					$streetQ[$k++]  = substr($string, 0,strpos($string,$word)+strlen($word));
-				}
+
+
+	public static function getDeceasedAddress($text){
+
+		$lines  =  Parse::removeShortLines($text, 10);
+
+		$addressString = false;
+		foreach($lines as $i => $line){
+			$pos = stripos($line,'address:');
+			if(stripos($line,'address:') !== false){
+				$addressString = trim(substr($line,8));
+				break;
 			}
-		}	
-		//print_R($streetQ);
-		if(count($streetQ) == 1){
-			return $streetQ[0];
-		}else{
-			return -1;
+
+			if($i == 8){break;}
 		}
-		
-	}
-	
-	//## City 
-	public function cityFinderLevel1(){
-		if($this->countCommas() == 2){
-			$array = explode(",",$this->result);
-			$city = $array[1];
+
+		if($addressString === false){
+			return false;
 		}else{
-			return -1;
+
+			$r = self::googleAddressLookup($addressString);
+#echo "\n\n".__LINE__."--addressString-->".$addressString."--r->".json_encode($r,JSON_PRETTY_PRINT);		
+			//return self::googleAddressLookup($addressString);
+			return $r;
 		}
-		return $city;
 	}
-	
-	public function cityFinderLevel2($zip){
-		$endings = array("township","borough", "city");
-		$result  = strtolower($this->result);
-		$cityQ = array();
+
+
+	# ########################################################################
+	#	Function Why is supposed to satify the unit, despite the OCR doing
+	#	a terrible job.  Seriously, how is a state and zip missed
+	# ########################################################################
+	private static function why($line){
+		$e = explode(",",$line);
+		$e = explode(" ",trim($e[0]));
+		return count($e)-1;	
+	} 
+
+
+	public static function getProbateAddress($text){
+
+		//Remove bad lines
+		$lines 	= Parse::removeShortLines($text,10);
 		
-		if(isset($this->zip[$zip]['city'])){
-			$city = $this->zip[$zip]['city'];
-			$cityString = $this->zip[$zip]['city2'];
-			$cities = explode(",",$cityString);
-			$cities[count($cities)] = $city;
+		//Re-index array
+		$lines  = Parse::indexArray($lines);
+
+		//Find line with the probate information
+		$line   = Parse::getProbateLine($lines);
+		if($line === false){return false;}
+
+		//Find where the address begins
+		$a = Parse::findNumber($line,true);
+
+		$funcs = array("self::findZip","self::findState","self::why");
+		foreach($funcs as $i => $func){
+			$index = call_user_func($func,$line);
 			
-			//echo "<br><br>Curent String--->{$result}<br>";
-			foreach($cities as $i => $city){
-				$city = strtolower($city);
-				$city = str_replace($endings, "",$city);
-				//echo "<br>City: {$this->proper($city)}<br>";
-				$j=0;
-				if(stripos($result,$city ) != false){
-					$cityQ[$j++] = $this->proper($city);
-				}
-			}
-			
-			//print_r($cityQ);
-			if(count($cityQ) == 1){
-				return $cityQ[0];
-			}else{
-				return -1;
-			}
+			if($index !== false){break;}
 		}
 
-		return -1;
-	}
-	
-	public function cityFinderLevel3($state, $ZIP){
-		$getCities = function($city,$string){
-			if(strlen($string) > 0){
-				$array = explode(",",$string);
-				$array[count($array)] = $city;
-			}else{
-				$array[0] = $city;
-			}
-			return $array;
-		};
-		
-		#echo "<H5 style='color:purple'>This is ZIP check" .  count($ZIP) , "</H5>";
-		
-		foreach($ZIP as $z => $info){
-			if(strtolower($state) == strtolower($info['state'])){
-				$cities = $getCities($info['city'], $info['city2']);
-				//echo "<H1 style='color:purple'>These are cities for $z" .  var_dump($cities) , "</H1>";
-				foreach($cities as $c => $city){
-					$city = strtolower($city);
-					if(isset($ref) == 0){
-						$ref[$city][0] = $z;
-					}else{
-						if(array_key_exists($city, $ref) != false){
-							$ref[$city][count($ref[$city])] = $z;
-						}else{
-							$ref[$city][0] = $z;
-						}
-					}
-				}
-			}
-		}
-		$j=0;
-		//echo "<br><br>This is the result--fdasf->" . $this->result;
-		$words = explode(" ", $this->result);
-		
-		foreach($words as $i => $word){
-			$w[$i] = strtolower(str_replace(",","",$word));
-		}
-		
-		$words = $w;
-		
-		if(count($words)>4){
-			unset($words[0]);
-			unset($words[1]);
-		}
+		if($index === false){return false;}
 
-		//echo "These are words--->";
-		//print_r($words);
-		$matches = array();
-		$j = 0;
-		foreach($ref as $city => $z){
-			//echo "<br>This is close--- $city";
-			$city = $this->closeMatch($city, $words);
-			//echo "Close Match--->" . $city;
-			if($city  != -1){
-				//echo "*****  CITY: " . $city;
-				$matches[$j++] = $city;
-			}
-		}
-		//print_r($matches);
-		if(count($matches)==1){
-			return $matches[0];
-		}else{
-			#echo "no matches found.";
-			return -1;
-		}
-	}
-	
+		$b = $index;
 
-	#############################################################################################
-	###################################		STATES 		#########################################
-	#############################################################################################
-	public static $states = array('AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA',
-						'MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN',
-						'TX','UT','VT','VA','WA','WV','WI','WY','AS','DC','FM','GU','MH','MP','PW','PR','VI','AE','AA','AE','AE',
-						'AE','AP');
+		/*$b = self::findZip($line);
 
-	//## States
-	public function stateFinderLevel1(){
-		$states = array('AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA',
-						'MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN',
-						'TX','UT','VT','VA','WA','WV','WI','WY','AS','DC','FM','GU','MH','MP','PW','PR','VI','AE','AA','AE','AE',
-						'AE','AP');
-		$stateQ = array();
-		$string = "";
-		for($x=0;$x<strlen($this->result);$x++){
-			$l = substr($this->result,$x,1);
-			if(ord($l) == 32){
-				if(strlen($string) == 2){
-					$stateQ[] = $string;
-				}
-				$string = "";
-			}else{
-				$string .= $l;
+		//If the Zip code cannot be found, look for a state
+		if($b === false){
+			$b = self::findState($line);
+			if($b === false){
+
+
+				//If a state cannot be found, then give up on life
+				if($b === false){return false;}
 			}
-		}
-		
-		$s = array();
-		$j = 0;
-		foreach($stateQ as $i => $state){
-			if(array_search($state, $states)!==false){
-				$i = array_search($state, $states);
-				$s[$j++] = $states[$i];
-			}
-		}
-		//count(count($s));
-		//print_r($s);
-		if(count($s) == 1){
-			return $s[0];
-		}else{
-			return -1;
-		}
+		}*/
+
+		//Shorten the line to where the address number starts
+		$addressString = Parse::sliceLine($line,$a,$b);
+
+		//Get the Google information
+		return self::googleAddressLookup($addressString);
 	}
 
+
+	# ########################################################################
+	#	Checks the parsed out address against address from Google APIs
+	#	After looking at data, some guidelines were decerned
+	#		- if Google and the address start with the same number, Google tends to be correct 
+	#       - if the strings slightly off, the OCR did not read the text correctly
+	#
+	# 	$parsed - the parsed out address
+	# 	$locale  - street - city - state - zip - coutnry
+	#	$type - 0 deceased 1 probate  
+	# ########################################################################
+	public static function googleVerify($parsed,$locale,$type){
+
+		#if(strlen($parsed) == 0){return false;}
+		if($type == 0){	$googleData = Cache::get('decAddress');  //Deceased Address
+		}else{			$googleData = Cache::get('proAddress');}//Probate Address
 	
-	//## ZIP
-	public function zipFinderLevel1(){
-		$string = "";
-		for($x=0;$x<=strlen($this->result);$x++){
-			$l = substr($this->result,$x,1);
-			if(is_numeric($l)){
-				$string .= $l;
-				if(strlen($string)==5){
-					break;
-				}
-			}else{
-				$string = "";
-			}
-		}
-		
-		if(strlen($string) == 5){
-			return $string;
-		}else{
-			return -1;
-		}
-	}
-	
-	
-	public function zipFinderLevel2($state, $ZIP){
-		if($state == "NJ"){
-			$string = "";
-			for($x=0;$x<=strlen($this->result);$x++){
-				$l = substr($this->result,$x,1);
-				if(is_numeric($l)){
-					$string .= $l;
-					if(strlen($string)==4){
-						break;
-					}
+		// The locale parameters correspond to the array in function googleAddressLookup
+		$googleAddress = $googleData[$locale];
+
+		// If Google doesn't return a result, then the parsed value is returned
+		if(strlen($googleAddress) == 0){return $parsed;}
+
+		switch($locale){
+
+			case 0:
+				$pe = explode(" ",$parsed);
+				$ge = explode(" ",$googleAddress);
+echo "\n\n".__LINE__."--pe-->".json_encode($pe,JSON_PRETTY_PRINT);
+echo "\n\n".__LINE__."--ge-->".json_encode($ge,JSON_PRETTY_PRINT);
+
+				
+				//Given address both start the same,
+				if(		$pe[0] == $ge[0] 
+				//if the street name google has is slightly different,
+					 && (
+					 		(	Parse::compareStrings($pe[1],$ge[1]) &&	$pe[1] != $ge[1] ) 
+					 	|| 	(	Parse::compareStrings($pe[1],$ge[1]) &&	count($pe) != count($ge))
+					 	)
+				){
+					//it tends to be the better choice
+					return $googleAddress;
+
 				}else{
-					$string = "";
+					return $parsed;
 				}
-			}
-			
-			$z = "0".$string;
-			if(array_key_exists($z,$ZIP)!==false){
-				return $z;
-			}else{
-				return -1;
-			}
+
 		}
+		
 	}
-	
+
 }
 
 ?>

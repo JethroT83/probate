@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Core;
-
+use Illuminate\Support\Facades\Cache as Cache;
 use \App\Core\Services\ParseService as Parse;
 use \App\Core\Services\AddressService as Address;
 
@@ -16,15 +16,38 @@ class I_parseDeceasedZip implements _Contract{
     # LEVEL 1 #
     public function parseLevel1(){
 
-        $lines  =  Parse::removeShortLines($this->text, 10);
-        $text   =  Parse::implodeLines($lines);
-        $string =  Parse::parseKeyWord($text,'Address:', null, array(2,5));
+        $address = Cache::get('proAddress');
+        return $address['zip'];
+
+        /*$lines  =  Parse::removeShortLines($this->text, 10);
+
+        foreach($lines as $i => $line){
+            $pos = stripos($line,'address:');
+            if(stripos($line,'address:') !== false){
+                $string = trim(substr($line,8));
+                break;
+            }
+
+            if($i == 8){break;}
+        }
 
         // String returns -- Address, City, State Zip
-        $e          = explode(",",$string);
-        $zipState   = preg_replace('/\s+/','',$e[2]);
+        $e      = explode(",",$string);
 
-        $zip      = substr($zipState,2,5);
+        $zipState =false;
+        switch($e){
+
+            case (count($e) == 3):
+                $zipState = trim($e[2]);
+                break;
+
+            case (count($e) == 4):
+                $zipState = trim($e[3]);
+                break;
+        }
+
+        if($zipState === false){return false;}
+        $zip      = substr($zipState,3,5);
 
         #if(in_array($zip, Address::$zip)){
         #    return $zip;
@@ -32,7 +55,7 @@ class I_parseDeceasedZip implements _Contract{
         #    return false;
         #}
         
-        return $zip;
+        return $zip;*/
     }
     
     # LEVEL 2 #

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Core;
-
+use Illuminate\Support\Facades\Cache as Cache;
 use \App\Core\Services\ParseService as Parse;
 use \App\Core\Services\AddressService as Address;
 
@@ -15,7 +15,9 @@ class M_parseProbateState implements _Contract{
 
     # LEVEL 1 #
     public function parseLevel1(){
-        $lines  = Parse::removeShortLines($this->text,10);
+        $address = Cache::get('proAddress');
+        return $address['state'];
+        /*$lines  = Parse::removeShortLines($this->text,10);
         $lines  = Parse::indexArray($lines);
         $line   = Parse::getProbateLine($lines);
 
@@ -28,7 +30,7 @@ class M_parseProbateState implements _Contract{
         }else{
 
             return Parse::sliceLine($line,$a,$a+1);//Get City in the line
-        }
+        }*/
 
     }
     

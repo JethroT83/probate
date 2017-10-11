@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Cache as Cache;
+use App\Core\Services\AddressService as Address;
 use Illuminate\Http\Request;
 
 class ParseController extends Controller{
@@ -16,6 +17,13 @@ class ParseController extends Controller{
 	}
 
 	public function parseLevel1(){
+
+		##	Address Service	##
+		#$decAddress = Address::getDeceasedAddress(self::$text);
+		$proAddress  = Address::getProbateAddress(self::$text);
+
+		#Cache::put('decAddress',$decAddress,10);
+		Cache::put('proAddress',$proAddress,10);
 
 		foreach(self::$parseClasses as $column => $parseClass){
 
@@ -54,14 +62,14 @@ class ParseController extends Controller{
 									'DateofDeath'=>'D_parseDeathDate',
 									'DecdFullNamePulled'=>'E_parseDeceasedName',
 									'DecdLastAddress'=>'F_parseDeceasedAddress',
-									'DecdLastCity'=>'G_parseDeceasedCity',
-									'DecdLastState'=>'H_parseDeceasedState',
-									'DecdLastZip'=>'I_parseDeceasedZip',
+									#'DecdLastCity'=>'G_parseDeceasedCity',
+									#'DecdLastState'=>'H_parseDeceasedState',
+									#'DecdLastZip'=>'I_parseDeceasedZip',
 									'PRFullNamePulled'=>'J_parseProbateName',
-									'PRAddress'=>'K_parseProbateAddress',
-									'PRCity'=>'L_parseProbateCity',
-									'PRState'=>'M_parseProbateState',
-									'PRZip'=>'N_parseProbateZip'
+									'PRAddress'=>'K_parseProbateAddress'#,
+									#'PRCity'=>'L_parseProbateCity',
+									#'PRState'=>'M_parseProbateState',
+									#'PRZip'=>'N_parseProbateZip'
 									);
 
 		return $this->parseLevel1();

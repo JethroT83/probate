@@ -149,22 +149,35 @@ Class ParseService{
 	# ###################################################################################
 	public static function checkProper($string){
 		
-		$ss = str_split($string);
-		$a 	= strtoupper($ss[0]);
+	    $a = substr($string,0,1);
+	    $b = substr($string,1,1);
+	    
+	    if(     ctype_alpha($string) !== false
+	        &&  $a == strtoupper($a)
+	        &&  $b == strtolower($b)){
+	        
+	        return true;        
+	    }
+	        
+	        
+		return false;
 
-		if($a != $ss[0]){
-			return false;
-		}else{
-			$word = array_slice($ss,1);
-			foreach($word as $i => $l){
-				$a = strtolower($l);
-				if($a != $l){
-					return false;
-				}
-			}
-		}
+	}
 
-		return true;
+
+	# ###################################################################################
+	# Checks for an initial
+	# ###################################################################################
+	public static function checkInitial($string){
+    
+	    $a = substr($string,0,1);
+	    $b = substr($string,1,1);
+
+	    if($a == strtoupper($a) && $b == "."){
+	        return true;
+	    }else{
+	        return false;
+	    }
 	}
 
 	# ###################################################################################
@@ -262,7 +275,7 @@ Class ParseService{
 		$e = explode(' ',$line);
 
 		foreach($e as $i => $a){
-			if(		is_numeric($a) // if word is numeric
+			if(		floatval($a)>0 // if word is numeric
 				||  ( $wordedNumbers === true 
 					&& in_array(strtolower($a),$wordedNumbers)) 
 				){
@@ -270,6 +283,18 @@ Class ParseService{
 					return $i;
 			}
 		}
+
+		return false;
+	}
+
+
+	public static function checkNumber($string){
+
+		$wordedNumbers = array('one','two','three','four','five','six','seven','eight','nine');
+
+	    if(floatval($string) > 0 || in_array(strtolower($string),$wordedNumbers)){
+	        return true;
+	    }
 
 		return false;
 	}
@@ -314,8 +339,25 @@ Class ParseService{
 		return trim(substr($string,0,$pos));// return substring
 	}
 
+
+	# ###################################################################################
+	# Compares two strings 
+	# Returns a true if the similarity is greater than the set threshold
+	# ###################################################################################
+	public static function compareStrings($a,$b){
+
+		$diff = levenshtein($a,$b);
+		$percentage = 1-($diff/strlen($a));
+
+		if($percentage >= .6){	return true;
+		}else{					return false;}
+
+	}
+
+
+
 	# Compares
-	public static function compare($haystack,$needle){
+	/*public static function compare($haystack,$needle){
 		
 		//Lists out what letters might be off
 		$changes = array("l"=>"i");
@@ -334,7 +376,7 @@ Class ParseService{
 		}
 
 		return false;
-	}
+	}*/
 
 
 	# Converts an array to CSV

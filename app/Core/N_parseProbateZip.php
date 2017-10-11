@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Core;
-
+use Illuminate\Support\Facades\Cache as Cache;
 use \App\Core\Services\ParseService as Parse;
 use \App\Core\Services\AddressService as Address;
 
@@ -15,7 +15,11 @@ class N_parseProbateZip implements _Contract{
 
     # LEVEL 1 #
     public function parseLevel1(){
-        $lines  = Parse::removeShortLines($this->text,10);
+
+        $address = Cache::get('proAddress');
+        return $address['zip'];
+
+        /*$lines  = Parse::removeShortLines($this->text,10);
         $lines  = Parse::indexArray($lines);
         $line   = Parse::getProbateLine($lines);
 
@@ -27,7 +31,7 @@ class N_parseProbateZip implements _Contract{
             return false;
         }else{
             return Parse::sliceLine($line,$a+1,$a+2);//Get City in the line
-        }
+        }*/
     }
     
     # LEVEL 2 #

@@ -16,15 +16,36 @@ Class J_parseProbateName implements _Contract{
 		
 		$line  = Parse::getProbateLine($lines);
 		if($line === false){return false;}
-		// Removes all non-proper cased words
-		$line 	= Parse::removeCase($line);
-		$index 	= Parse::findNumber($line, true);
 
-		if($index === false){
-			return false;
-		}else{
-			return Parse::sliceLine($line,0,$index);
+		$e = explode(" ",$line);
+
+		$name = "";
+		foreach($e as $i => $word){
+		    
+		    if(Parse::checkNumber($word)){break;}
+
+		    switch($word){
+
+		    	case (substr(strtolower($word),0,3) == "exe"):
+		    		break;
+
+		    	case (		substr(strtolower($word),0,2) == "af"
+		    			&&	substr(strtolower($word),-3) == "ant"):
+		    		break;
+
+		        case (Parse::checkProper($word) === true):
+		            $name.= $word . " ";
+		            break;
+		        
+		        case (Parse::checkInitial($word) === true):
+		            $name.=$word ." ";
+		            break;
+		    }
 		}
+
+
+
+		return trim($name);
 
 	}
 
