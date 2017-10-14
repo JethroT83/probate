@@ -19,6 +19,6 @@ Route::get('/', function () {
 Route::get('/run','RunController@handle')->name('run');
 
 Route::get('/info',function(){
-	Cache::put('test','var');
-	return Cache::get('test');
+
+	echo "!".phpinfo();
 });

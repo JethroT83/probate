@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Core\Services;
-
+use Illuminate\Support\Facades\Cache as Cache;
 Class ParseService{
 
 	public static $out;
@@ -308,13 +308,25 @@ Class ParseService{
 	# ###################################################################################
 	public static function sliceLine($line,$a,$b=null){
 
+		if(strlen(str_replace(" ","",$line)) == 0){return false;}
+		if(!is_numeric($a)){return false;}
+
+#$column = Cache::get('column');
+#$stuff = $line."--a-->".$a."--b-->".$b."--column-->".$column;
+#$page = Cache::get('page');
+
+#file_put_contents("stuff_{$page}_{$column}.txt",$stuff);
+
 		$e = explode(' ',$line);
 
         if(is_null($b)){$b = count($e)-1;}
+        if(!isset($e[$b])){return false;}
 
 		$line = '';
+		#$c = 0
 		for($i=$a;$i<=$b;$i++){
 			$line.=$e[$i].' ';
+			#$c++;
 		}
 
 		return trim($line);

@@ -12,7 +12,7 @@ class RunController extends Controller{
 	public function __construct(){	
 
 		### CACHE FILES ###
-		$this->file = ROOT."storage/app/build.pdf"; //Getting proof of concept
+		$this->file = ROOT."storage/app/OCT2017_6.pdf"; //Getting proof of concept
 		Cache::put('file', $this->file, 30);
 
 		// Gets the actual file name
@@ -26,13 +26,12 @@ class RunController extends Controller{
 
 		// Get the Number of Pages
 		$pageCount = run::getPageCount($this->file);
-
+echo "<h1>Page Count:".$pageCount."</h1>";
 		// Iterate through each page
 		for($page=1;$page<=$pageCount;$page++){
 
 			### CACHE PAGES ###
 			//Cache Page
-			$p = (string)$page."shit";
 			Cache::put('page',$page,10);
 
 			### CACHE PAGES ###
@@ -43,27 +42,32 @@ class RunController extends Controller{
 			Cache::put('imageFile',$imageFile,20);
 
 			$textFile = ROOT."storage/app/{$this->fname}_p{$page}.txt";
-			$txtFname = "/var/www/probate/storage/app/{$this->fname}_p{$page}.txt";
+			#$txtFname = "/var/www/probate/storage/app/{$this->fname}_p{$page}.txt";
+			
+
 			Cache::put('textFile',$textFile,20);
+
+echo "<li>".$page."</li>";
 
 			// If there is a text file in cache, use it
 			if(is_file($textFile)){
 				#$text = Storage::get($txtFname);
 				$text = file_get_contents($textFile);
 			}else{
+				if(!is_file($pdfFile)){
+					// break out the PDF page
+					run::paginatePDF();
+				}
 
-				// break out the PDF page
-				run::paginatePDF();
-
-				// Convert PDF to JPEG -- TERRERACT OCR cannot read PDFs
-				run::convertToJPG();
+				if(!is_file($imageFile)){
+					// Convert PDF to JPEG -- TERRERACT OCR cannot read PDFs
+					run::convertToJPG();
+				}
 
 				// Converts JPEG to a text file
-				run::readJPG();
-
-				#Storage::put($textFile, $text);
+				$text = run::readJPG();
 			}
-			
+
 			//cache result-- the data will be used in parsing functions
 			$out[$page] = run::parse($text);
 		}

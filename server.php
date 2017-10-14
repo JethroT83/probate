@@ -17,5 +17,6 @@ $uri = urldecode(
 if ($uri !== '/' && file_exists(__DIR__.'/public'.$uri)) {
     return false;
 }
-
+ini_set('max_execution_time', 1200);
+ini_set('memory_limit', '-1');
 require_once __DIR__.'/public/index.php';

@@ -17,7 +17,11 @@ class C_parseProbateDate  implements _Contract{
 		$line   =  Date::getProbateDateLine($lines);
 
 		$e = explode(":",$line);
-		return substr($e[2],0,10);
+		if(!isset($e[2])){
+			return false;
+		}else{
+			return substr($e[2],0,10);
+		}
 	}
 
 	public function parseLevel2(){

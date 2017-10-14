@@ -45,7 +45,7 @@ Class runService{
 	}
 	
 	# Converts PDF to a JPEG
-	public static function convertToJPG($density = 413, $quality = 100){
+	public static function convertToJPG($density = 600, $quality = 100){
 
 		$pdfFile 	= Cache::get('pdfFile');
 		$imageFile 	= Cache::get('imageFile');
@@ -57,9 +57,6 @@ Class runService{
 
 		# Execute command
 		exec($cmd);
-
-		# Change the permissions of the folder
-		#exec("sudo chmod 777 ".ROOT."/storage -R");
 	}
 
 	public static function unlinkPage($page){
@@ -83,9 +80,8 @@ Class runService{
 		$cmd.= $imageFile . " ";
 		$cmd.= substr($textFile,0,-4) . " ";//Tesseract already puts a .txt when converting the file
 		$cmd.= "-l eng ";
-		#$cmd.= key space
-#file_put_contents("cmd.txt",$cmd);
-		shell_exec($cmd);
+
+		return shell_exec($cmd);
 
 	}
 
@@ -93,18 +89,15 @@ Class runService{
 	#Parse Text
 	public static function parse($text){
 
-		#exec("sudo chmod 777 ".ROOT."/storage -R");
-
 		$P = new \App\Http\Controllers\ParseController($text);
 
-		return  $P->onController();
+		return  $P->handle();
 	}
 
 
 	# Converts an array to CSV
 	public static function array_to_CSV($array, $filename){
 
-		#exec("sudo chmod 777 storage -R");
 		$keys	=	array_keys($array[1]);
 		$f		=	fopen($filename.".csv" ,'w');
 		fputcsv ($f	 , $keys);

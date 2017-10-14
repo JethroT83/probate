@@ -19,18 +19,20 @@ class ParseController extends Controller{
 	public function parseLevel1(){
 
 		##	Address Service	##
-		#$decAddress  = Address::getDeceasedAddress(self::$text);
+		$decAddress  = Address::getDeceasedAddress(self::$text);
 		$proAddress  = Address::getProbateAddress(self::$text);
 
-		#Cache::put('decAddress',$decAddress,10);
+		Cache::put('decAddress',$decAddress,10);
 		Cache::put('proAddress',$proAddress,10);
 
 		// If the information Google returns is bad, then there is no need for it.
-		if(Address::testGoogleAddress(self::$text,0)){Cache::delete('decAddress');}
-		if(Address::testGoogleAddress(self::$text,1) === false){Cache::delete('proAddress');}
+		if(Address::testGoogleAddress(self::$text,0) === false){Cache::forget('decAddress');}
+		if(Address::testGoogleAddress(self::$text,1) === false){Cache::forget('proAddress');}
 
 
 		foreach(self::$parseClasses as $column => $parseClass){
+
+			Cache::put('column',$column,10);
 
 			$parseClass = "\App\Core\\".$parseClass;
 
@@ -50,7 +52,7 @@ class ParseController extends Controller{
 			if($test === true){	$result[$column] = $r;
 			}else{				$result[$column] = -1;} // -1 is used because in a CSV it is more clear flag than false, which will be null
 
-			Cache::put("result",$result,2);
+			Cache::put("result",$result,20);
 
 		}
 
@@ -59,7 +61,7 @@ class ParseController extends Controller{
 
 
 
-	public function onController(){
+	public function handle(){
 
 		self::$parseClasses = array('Docket'=>'A_parseDocket',
 									'CaseType'=>'B_parseCaseType',

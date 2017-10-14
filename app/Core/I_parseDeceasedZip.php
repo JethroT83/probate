@@ -29,6 +29,7 @@ class I_parseDeceasedZip implements _Contract{
         }
 
         // String returns -- Address, City, State Zip
+        if(!isset($string) || strlen($string) == 0){return false;}
         $e      = explode(",",$string);
 
         $zipState =false;

@@ -16,7 +16,11 @@ class D_parseDeathDate implements _Contract{
 		$line   =  Date::getProbateDateLine($lines);
 
 		$e = explode(":",$line);
-		return substr($e[3],0,10);
+		if(!isset($e[3])){
+			return false;
+		}else{
+			return substr($e[3],0,10);
+		}
 	}
 
 	public function parseLevel2(){

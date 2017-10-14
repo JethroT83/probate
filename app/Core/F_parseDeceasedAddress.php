@@ -24,6 +24,7 @@ class F_parseDeceasedAddress implements _Contract{
 		}
 
 		// String returns -- Address, City, State Zip
+		if(!isset($string) || strlen($string) == 0){return false;}
 		$e 		= explode(",",$string);
 
 		$address =false;
@@ -39,7 +40,7 @@ class F_parseDeceasedAddress implements _Contract{
 		}
 
 
-		return $address;
+		return Address::googleVerify($address,'street',0);
 	}
 	
 

@@ -28,6 +28,7 @@ class G_parseDeceasedCity implements _Contract{
         }
 
         // String returns -- Address, City, State Zip
+        if(!isset($string) || strlen($string) == 0){return false;}
         $e      = explode(",",$string);
 
         $address =false;
