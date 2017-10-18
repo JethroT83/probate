@@ -7,6 +7,26 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 Class runService{
 
+
+	public static function cachePageFile($file,$page){
+
+		$e = explode("/",$file);
+		$fname = substr(end($e),0,-4);
+		Cache::put('fname', $file, 30);
+
+		### CACHE PAGES ###
+		$pdfFile = base_path()."/storage/app/{$fname}_p{$page}.pdf";
+		Cache::put('pdfFile',$pdfFile,20);
+
+		$imageFile = base_path()."/storage/app/{$fname}_p{$page}.jpg";
+		Cache::put('imageFile',$imageFile,20);
+
+		$textFile = base_path()."/storage/app/{$fname}_p{$page}.txt";
+		Cache::put('textFile',$textFile,20);
+
+	}
+
+
 	public static function getPageCount($file){
 
 		//New instance of the PDF reader
@@ -63,8 +83,8 @@ Class runService{
 
 		$fname = cache::getCache("fname");
 
-		$jpgFile = ROOT."storage/cache/{$fname}_p{$page}.jpg";
-		$txtFile = ROOT."storage/cache/{$fname}_p{$page}.txt";
+		$jpgFile = base_path()."/storage/cache/{$fname}_p{$page}.jpg";
+		$txtFile = base_path()."/storage/cache/{$fname}_p{$page}.txt";
 
 		@unlink($jpgFile);
 		@unlink($txtFile);

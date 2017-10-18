@@ -10,18 +10,6 @@ ini_set('memory_limit', '2048M');
 
 define('LARAVEL_START', microtime(true));
 
-/*
-|--------------------------------------------------------------------------
-| Define the root directory
-|--------------------------------------------------------------------------
-| 
-| This app takes a PDF, converts it to a JPG, and then text. There are a bunch
-| of assets that cannot be stored in namespaces, therefore, defining the root 
-| directory constant saves the hassle of working out relative paths.
-|
-*/
-
-DEFINE("ROOT",__DIR__."/../");
 
 /*
 |--------------------------------------------------------------------------

@@ -12,13 +12,9 @@ class RunController extends Controller{
 	public function __construct(){	
 
 		### CACHE FILES ###
-		$this->file = ROOT."storage/app/OCT2017_6.pdf"; //Getting proof of concept
+		$this->file = base_path()."/storage/app/build.pdf"; //Getting proof of concept
 		Cache::put('file', $this->file, 30);
 
-		// Gets the actual file name
-		$e = explode("/",$this->file);
-		$this->fname = substr(end($e),0,-4);
-		Cache::put('fname', $this->file, 30);
 	}
 
 
@@ -26,28 +22,19 @@ class RunController extends Controller{
 
 		// Get the Number of Pages
 		$pageCount = run::getPageCount($this->file);
-echo "<h1>Page Count:".$pageCount."</h1>";
+
 		// Iterate through each page
 		for($page=1;$page<=$pageCount;$page++){
 
-			### CACHE PAGES ###
-			//Cache Page
+			### CACHE PAGE ###
 			Cache::put('page',$page,10);
 
-			### CACHE PAGES ###
-			$pdfFile = ROOT."storage/app/{$this->fname}_p{$page}.pdf";
-			Cache::put('pdfFile',$pdfFile,20);
+			### CACHE FILE NAMES ###
+			Run::cachePageFile($this->file,$page);
 
-			$imageFile = ROOT."storage/app/{$this->fname}_p{$page}.jpg";
-			Cache::put('imageFile',$imageFile,20);
-
-			$textFile = ROOT."storage/app/{$this->fname}_p{$page}.txt";
-			#$txtFname = "/var/www/probate/storage/app/{$this->fname}_p{$page}.txt";
-			
-
-			Cache::put('textFile',$textFile,20);
-
-echo "<li>".$page."</li>";
+			$pdfFile  	= Cache::get('pdfFile');
+			$imageFile 	= Cache::get('imageFile');
+			$textFile 	= Cache::get('textFile');
 
 			// If there is a text file in cache, use it
 			if(is_file($textFile)){

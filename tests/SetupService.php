@@ -6,6 +6,7 @@ class SetupService{
 
 	private static $pdfFile;
 	private static $controlFile;
+	private static $jobFile;
 	private static $control;
 	private static $txtDir;
 	private static $cacheDir;
@@ -14,8 +15,6 @@ class SetupService{
 
 	# Basic Unit Setup
 	public static function setUpUnit(){
-
-		@DEFINE("ROOT",__DIR__."/../"); // Define root directory
 
 		# Threshold
 		if(getenv("p") == null){self::$p=90;}//If no environmental variable is set, set p=90
@@ -26,10 +25,11 @@ class SetupService{
 		else{		self::$t = getenv("t");}//Get the data set from the environmental variable t
 
 		$dir = "dataSet_".self::$t;
-		self::$pdfFile  	= ROOT."storage/framework/testing/{$dir}/build/build.pdf";
-		self::$controlFile  = ROOT."storage/framework/testing/{$dir}/control/control.json";
-		self::$txtDir  		= ROOT."storage/framework/testing/{$dir}/build/txt";
-		self::$cacheDir  	= ROOT."storage/app";
+		self::$pdfFile  	= base_path()."/storage/framework/testing/{$dir}/build/build.pdf";
+		self::$controlFile  = base_path()."/storage/framework/testing/{$dir}/control/control.json";
+		self::$jobFile  	= base_path()."/storage/framework/testing/{$dir}/control/job.json";
+		self::$txtDir  		= base_path()."/storage/framework/testing/{$dir}/build/txt";
+		self::$cacheDir  	= base_path()."/storage/app";
 	}
 
 
@@ -58,6 +58,11 @@ class SetupService{
 	# Retrives the Controlled variables from the data set folder
 	public static function getControl(){
 		return self::$control =  json_decode(file_get_contents(self::$controlFile),true);
+	}
+
+	# Retrives the Controlled variables from the data set folder
+	public static function getJob(){
+		return json_decode(file_get_contents(self::$jobFile),true);
 	}
 
 	# Retrieves the test variables from the app
