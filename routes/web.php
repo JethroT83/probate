@@ -11,16 +11,12 @@
 |
 */
 
-#Route::get('/', function () {
-#    return view('welcome');
-#});
+Route::get('/', function () {
+   return view('welcome');
+});
 Route::get('/','FileController@index');
 Route::post('/store','FileController@store')->name('file.store');
 
-
-#Route::get('/', function () {return view('file.index');});
-
-#Route::get('/run','RunController@handle')->name('run');
 
 
 ############################ RUN ##########################
@@ -61,8 +57,4 @@ Route::get('/run',function(){
 	}
 
 
-
 })->name('run');
-
-
-Route::post('/store','FileController@store')->name('file.store');
