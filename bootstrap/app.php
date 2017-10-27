@@ -41,16 +41,17 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
-/*
+
+/**
 |--------------------------------------------------------------------------
-| Return The Application
+| Add the middleware for cross site scripting
 |--------------------------------------------------------------------------
 |
-| This script returns the application instance. The instance is given to
-| the calling script so we can separate the building of the instances
-| from the actual running of the application and sending responses.
-|
+| In order for a javascript frontend to make calls, the right headers need
+| to be set.  This is vendor library that cofigure the headers.
 */
+$app->configure('cors');
+
 
 /**
  * Configure Monolog.
@@ -63,5 +64,19 @@ $app->configureMonologUsing( function( Monolog\Logger $monolog) {
     $handler = new Monolog\Handler\RotatingFileHandler( $filename );
     $monolog->pushHandler( $handler );
 });
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Return The Application
+|--------------------------------------------------------------------------
+|
+| This script returns the application instance. The instance is given to
+| the calling script so we can separate the building of the instances
+| from the actual running of the application and sending responses.
+|
+*/
 
 return $app;

@@ -42,6 +42,7 @@ class AuthController extends Controller{
 
 		// get user credentials: email, password
 		$credentials = $request->only('email', 'password');
+
 		$token = null;
 
 		try {

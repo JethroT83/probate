@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'debug' => env('APP_DEBUG', true),
+    'debug' => env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -179,6 +179,7 @@ return [
 
         //Added Providers
         \Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+        \Barryvdh\Cors\ServiceProvider::class,
 
     ],
 
