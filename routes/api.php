@@ -29,8 +29,9 @@ Route::group([
         'uses' => 'AuthController@login'
       ]);
 
-      Route::get('/test', function(){
-        echo'works';
-      });
+      Route::post('/upload', [
+        'as'=>'upload',
+        'uses' => 'FileController@store'
+      ]);
 
 });

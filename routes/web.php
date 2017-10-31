@@ -17,8 +17,6 @@ Route::get('/', function () {
 Route::get('/','FileController@index');
 Route::post('/store','FileController@store')->name('file.store');
 
-
-
 ############################ RUN ##########################
 use App\Jobs\A_BreakPDF;
 use App\Jobs\B_ConvertToText;
@@ -56,5 +54,8 @@ Route::get('/run',function(){
 		$prom->wait();
 	}
 
-
 })->name('run');*/
+
+//Route::get('/', function () {
+//   echo "1". phpinfo();
+//});

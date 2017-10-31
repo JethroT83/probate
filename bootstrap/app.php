@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Create The Application
@@ -50,7 +49,7 @@ $app->singleton(
 | In order for a javascript frontend to make calls, the right headers need
 | to be set.  This is vendor library that cofigure the headers.
 */
-$app->configure('cors');
+#$app->configure('cors');
 
 
 /**
