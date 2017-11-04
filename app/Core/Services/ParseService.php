@@ -311,12 +311,6 @@ Class ParseService{
 		if(strlen(str_replace(" ","",$line)) == 0){return false;}
 		if(!is_numeric($a)){return false;}
 
-#$column = Cache::get('column');
-#$stuff = $line."--a-->".$a."--b-->".$b."--column-->".$column;
-#$page = Cache::get('page');
-
-#file_put_contents("stuff_{$page}_{$column}.txt",$stuff);
-
 		$e = explode(' ',$line);
 
         if(is_null($b)){$b = count($e)-1;}
@@ -365,6 +359,17 @@ Class ParseService{
 		if($percentage >= .6){	return true;
 		}else{					return false;}
 
+	}
+
+
+	public static function sanitizeLines($array){
+
+		$r = array();
+		foreach($array as $key => $info){
+			$r[$key] = preg_replace( "/\r|\n/", "", $info );
+		}
+
+		return $r;
 	}
 
 

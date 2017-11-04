@@ -1,7 +1,10 @@
 <?php
 namespace Tests;
 
-
+use App\Http\Controllers\Api\DownloadController as DC;
+use App\Http\Controllers\Api\UploadController as UC;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 class SetupService{
 
 	private static $pdfFile;
@@ -12,6 +15,7 @@ class SetupService{
 	private static $cacheDir;
 	private static $t;
 	private static $p;
+	private static $fileID;
 
 	# Basic Unit Setup
 	public static function setUpUnit(){
@@ -29,7 +33,7 @@ class SetupService{
 		self::$controlFile  = base_path()."/storage/framework/testing/{$dir}/control/control.json";
 		self::$jobFile  	= base_path()."/storage/framework/testing/{$dir}/control/job.json";
 		self::$txtDir  		= base_path()."/storage/framework/testing/{$dir}/build/txt";
-		self::$cacheDir  	= base_path()."/storage/app";
+		self::$cacheDir  	= base_path()."/storage/app/uploads";
 	}
 
 
@@ -53,6 +57,9 @@ class SetupService{
 		}
 
 		closedir($dir);
+
+		$U = new UC();
+		$U->post("build.pdf","build.pdf");
 	} 
 
 	# Retrives the Controlled variables from the data set folder
@@ -65,27 +72,56 @@ class SetupService{
 		return json_decode(file_get_contents(self::$jobFile),true);
 	}
 
+	# The database is different from control.json
+	# instead of redoing control.json, this function renames the keys
+	private static function nameRow($row){
+
+		return array(
+					'Docket'			=> $row->docket,
+					'CaseType'			=> $row->case_type,
+					'ProbateDate'		=> $row->probate_date,
+					'DateofDeath'		=> $row->death_date,
+					'DecdFullNamePulled'=> $row->deceased_name,
+					'DecdLastAddress'	=> $row->deceased_address,
+					'DecdLastCity'		=> $row->deceased_city,
+					'DecdLastState'		=> $row->deceased_state,
+					'DecdLastZip'		=> $row->deceased_zip,
+					'PRFullNamePulled'	=> $row->probate_name,
+					'PRAddress'			=> $row->probate_address,
+					'PRCity'			=> $row->probate_city,
+					'PRState'			=> $row->probate_state,
+					'PRZip'				=> $row->proabte_zip
+					);
+	}
+
+
 	# Retrieves the test variables from the app
 	public static function getTest(){
-		# Open CSV file the app outputs
-		$rows = array_map('str_getcsv', file(self::$cacheDir."/build_out.csv"));
 
-		# Bind the values to the keys
-		foreach( $rows as $key => $value ) {
-			//Error is suppressed to see exactly where the test fails
-			$rows[$key] = @array_combine($rows[0], $value); 
-		}
-		
-		# Omit the first row, which are the keys
-		$rows = array_values(array_slice($rows,1));
-		
-		# Set the key of each row to the primary key field, which is the 'Docket'
+		$D 		= new DC(1);//Dowload instance with the fileID
+		$report = $D->handle();//return the data
+	
 		$result = array();
-		foreach($rows as $i => $row) {
-			$result[$row['Docket']] = $row;
+		foreach($report as $i => $row){
+			$result[$row->docket] = self::nameRow($row);
 		}
 
 		return $result;
+	}
+
+	public static function runCore(){
+
+		$A = new \App\Http\Controllers\JobControllers\BreakPDF(1);
+		$A->handle();
+
+		$B = new \App\Http\Controllers\JobControllers\ConvertToText(1);
+		$B->handle();
+
+		$C = new \App\Http\Controllers\JobControllers\ParseText(1);
+		$C->handle();
+
+		$D = new \App\Http\Controllers\JobControllers\CleanUp(1);
+		$D->handle();
 	}
 
 	public static function grade($exceptions = array()){
@@ -120,7 +156,17 @@ class SetupService{
 		#unlink(__DIR__."/../storage/build.pdf");
 
 	}
+
+	public static function truncate(){
+
+		$tableNames = Schema::getConnection()->getDoctrineSchemaManager()->listTableNames();
+
+		foreach ($tableNames as $name) {
+			//if you don't want to truncate migrations
+			if ($name == 'migrations') {
+				continue;
+			}
+			DB::table($name)->truncate();
+		}
+	}
 }
-
-
-?>

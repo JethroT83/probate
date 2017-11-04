@@ -9,11 +9,12 @@ use App\Core\Services\RunService as Run;
 
 class BreakPDF extends Controller{
 
-	public function __construct($file){	
+	public function __construct(int $fileID){	
 
-		### CACHE FILES ###
-		$this->file = $file; //Getting proof of concept
-		Cache::put('file',$file,20);
+		### CACHE FILE ###
+		Run::cacheFile($fileID);
+
+		$this->file = Cache::get('file');
 	}
 
 

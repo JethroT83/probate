@@ -9,10 +9,10 @@ use \App\Core\Services\RunService as run;
 
 class RunController extends Controller{
 
-	public function __construct(){	
+	public function __construct(string $file){	
 
 		### CACHE FILES ###
-		$this->file = base_path()."/storage/app/build.pdf"; //Getting proof of concept
+		$this->file = base_path()."/storage/app/uploads/".$file;
 		Cache::put('file', $this->file, 30);
 
 	}
@@ -60,6 +60,6 @@ class RunController extends Controller{
 		}
 
 		//Converts the object to a csv file
-		run::array_to_CSV($out,  substr($this->file,0,-4) . "_out" );
+		#run::array_to_CSV($out,  substr($this->file,0,-4) . "_out" );
 	}
 }

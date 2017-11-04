@@ -9,11 +9,17 @@ use App\Core\Services\RunService as Run;
 
 class ParseText extends Controller
 {
-	public function __construct($file){	
+	public function __construct(int $fileID){	
 
-		### CACHE FILES ###
-		$this->file = $file;
-		Cache::put('file', $this->file, 30);
+		$this->fileID = $fileID;
+
+		### CACHE FILE ###
+		Run::cacheFile($fileID);
+
+		$this->file = Cache::get('file');
+
+		$info = Cache::get('file_info');
+		$this->fName = $info->local_name;
 	}
 
 
@@ -39,11 +45,11 @@ class ParseText extends Controller
 				$text = file_get_contents(Cache::get('textFile'));
 
 				//cache result-- the data will be used in parsing functions
-				$out[$page] = run::parse($text);
+				$info = Run::parse($text);
+
+
+				Run::postText($this->fileID,$info);
 			}
 		}
-
-		//Converts the object to a csv file
-		run::array_to_CSV($out,  substr($this->file,0,-4) . "_out" );
 	}
 }

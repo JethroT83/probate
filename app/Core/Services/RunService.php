@@ -3,9 +3,22 @@
 namespace App\Core\Services;
 use Illuminate\Support\Facades\Storage;
 
-#use \app\services\cacheService as cache;
+use \App\Core\Services\ParseService as Parse;
 use Illuminate\Support\Facades\Cache;
-Class runService{
+
+use Illuminate\Support\Facades\DB;
+Class RunService{
+
+
+	public static function cacheFile(int $fileID){
+
+		$info = self::getFileInfo($fileID);
+		Cache::put('file_info',$info,20);
+
+		$file = base_path()."/storage/app/uploads/".$info->local_name;
+		Cache::put('file',$file,20);
+
+	}
 
 
 	public static function cachePageFile($file,$page){
@@ -15,13 +28,13 @@ Class runService{
 		Cache::put('fname', $file, 30);
 
 		### CACHE PAGES ###
-		$pdfFile = base_path()."/storage/app/{$fname}_p{$page}.pdf";
+		$pdfFile = base_path()."/storage/app/uploads/{$fname}_p{$page}.pdf";
 		Cache::put('pdfFile',$pdfFile,20);
 
-		$imageFile = base_path()."/storage/app/{$fname}_p{$page}.jpg";
+		$imageFile = base_path()."/storage/app/uploads/{$fname}_p{$page}.jpg";
 		Cache::put('imageFile',$imageFile,20);
 
-		$textFile = base_path()."/storage/app/{$fname}_p{$page}.txt";
+		$textFile = base_path()."/storage/app/uploads/{$fname}_p{$page}.txt";
 		Cache::put('textFile',$textFile,20);
 
 	}
@@ -112,6 +125,85 @@ Class runService{
 		$P = new \App\Http\Controllers\ParseController($text);
 
 		return  $P->handle();
+	}
+
+	public static function getFileInfo($fileID){
+
+		$data = DB::table('files')
+				->where('id',$fileID)
+				->get();
+
+		if(count($data) == 0){
+			error_log("No file by the id of ".$fileID);
+			die();
+		}else{
+			return $data[0];
+		}
+
+	}
+
+
+	public static function postText($fileID, $info){
+
+		$info = Parse::sanitizeLines($info); // Removes linebreaks
+
+		DB::table('report')->insert(
+		    [
+				'file_id' 			=> $fileID,
+				'docket' 			=> $info['Docket'],
+				'case_type'			=> $info['CaseType'],
+				'probate_date'		=> $info['ProbateDate'],
+				'death_date'		=> $info['DateofDeath'],
+				'deceased_name'		=> $info['DecdFullNamePulled'],
+				'deceased_address'	=> $info['DecdLastAddress'],
+				'deceased_city'		=> $info['DecdLastCity'],
+				'deceased_state'	=> $info['DecdLastState'],
+				'deceased_zip'		=> $info['DecdLastState'],
+				'probate_name'		=> $info['PRFullNamePulled'],
+				'probate_address'	=> $info['PRAddress'],
+				'probate_city'		=> $info['PRCity'],
+				'probate_state' 	=> $info['PRState'],
+				'proabte_zip'		=> $info['PRZip'],
+				'input_date' 		=> date('Y-m-d')
+		    ]
+		);
+	}
+
+
+	public static function getReportByFile($fileID){
+
+		return DB::table('report')
+			->select('input_date','docket','case_type','probate_date','death_date','deceased_name',
+					'deceased_address','deceased_city','deceased_state','deceased_zip','probate_name',
+					'probate_address','probate_city','probate_state','proabte_zip')
+			->where('file_id',$fileID)
+			->get();
+
+	}
+
+	public static function getCsvByFile($fileID){
+
+		$data = self::getReportByFile($fileID);
+		$file = self::getFileInfo($fileID);
+
+		if(!empty($data) && $file !== false){
+
+			$keys	=	array_keys($data[0]);
+			$fName  = 	str_replace(".pdf","",$file['frontend_name']);
+			$f		=	fopen($fName.".csv" ,'w');
+			fputcsv ($f, $keys);
+			
+			foreach($data as $i => $info){
+				fputcsv($f, $info);
+			}
+			
+			fclose($f);
+
+		}else{
+
+			return false;
+		}
+
 	}
 
 

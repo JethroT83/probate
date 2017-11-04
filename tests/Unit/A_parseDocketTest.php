@@ -35,13 +35,14 @@ class A_parseDocketTest extends TestCase{
 		
 		# Deletes the files in the storage folder
 		#Setup::unlink_files();
+
+		Setup::truncate();
 	}
 
 
 	public function testCode(){
 
-		$R = new \App\Http\Controllers\RunController();
-		$R->handle();
+		Setup::runCore();
 
 		# Get the test data
 		$csv = Setup::getTest();
