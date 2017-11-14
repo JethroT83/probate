@@ -15,6 +15,7 @@ class B_parseCaseType implements _Contract{
 
         // Break out Lines
         $lines = Parse::breakLines($this->text);
+        if(count($lines) == 0){return false;}
 
         // Case Type is normally on line 3
          for($i=0;$i<5;$i++){

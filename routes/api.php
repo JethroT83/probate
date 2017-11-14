@@ -9,11 +9,14 @@ use App\Jobs\A_BreakPDF;
 use App\Jobs\B_ConvertToText;
 use App\Jobs\C_ParseText;
 use App\Jobs\D_CleanUp;
+use App\Jobs\E_Email;
 use Carbon\Carbon;
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Promise\EachPromise;
 
-
+use Illuminate\Support\Facades\Cache as Cache;
+use App\Core\Services\RunService as Run;
+use App\Http\Controllers\JobControllers\ConvertToText as cText;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -42,7 +45,7 @@ Route::group([
 
       Route::post('/upload', [
         'as'=>'upload',
-        'uses' => 'FileController@store'
+        'uses' => 'UploadController@store'
       ]);
 
       Route::get('/download/{fileID}',function(Request $request){
@@ -58,28 +61,57 @@ Route::group([
 
       Route::get('/run/{fileID}',function(Request $request){
 
-        $fileID = $request->fileID;
+        $fileID   = $request->fileID;
+        Run::cacheFile($fileID);
+        $file = Cache::get('file');
 
-        $job1 = (new A_BreakPDF($fileID))->delay(Carbon::now()->addSeconds(5));
-        $job2 = (new B_ConvertToText($fileID));
-        $job3 = (new C_ParseText($fileID));
-        $job4 = (new D_CleanUp($fileID));
+        //Break PDF into pages
+        $job1 = (new A_BreakPDF($fileID));
 
-        $promises = [dispatch($job1),dispatch($job2),dispatch($job3),dispatch($job4)];
+        $p1 = new Promise(dispatch($job1), 
+                          function () 
+                          use (&$called) { $called = true; });
+        $p1->then(function () {
 
-        $each = new EachPromise($promises, [
-            'fulfilled' => function ($value, $id, Promise $aggregate) use (&$called) {
-                $aggregate->resolve(null);
-            },
-            'rejected' => function (\Exception $reason) {
-                echo $reason->getMessage();
-            }
-        ]);
+          // Get the Number of Pages
+          $pageCount = Run::getPageCount($file);
 
-        foreach($each->promise() as $i => $prom){
-          $prom->resolve();
-          $prom->wait();
-        }
+          $promises = [];
+          for($page=1;$page<=$pageCount;$page++){
 
+            //push to queue
+            array_push($promises,dispatch((new B_ConvertToText($fileID, $page))));
+
+          }
+
+          array_push($promises, dispatch((new C_ParseText($fileID))));
+          array_push($promises, dispatch((new D_CleanUp($fileID))));
+          //array_push($promises, dispatch((new E_Email($fileID))));
+
+
+          $each = new EachPromise($promises, [
+              'fulfilled' => function ($value, $id, Promise $aggregate) use (&$called) {
+                  $aggregate->resolve(null);
+              },
+              'rejected' => function (\Exception $reason) {
+                  echo $reason->getMessage();
+              }
+          ]);
+
+          foreach($each->promise() as $i => $prom){
+            $prom->resolve();
+            $prom->wait();
+          }
+        });
+      });
+
+
+      Route::get('/email/{fileID}',function(Request $request){
+          $fileID = $request->fileID;
+
+          $E = new E_Email($fileID);
+          $E->handle();
       });
 });
+
+Route::post('login', [ 'as' => 'login', 'uses' => 'AuthController@halt']);

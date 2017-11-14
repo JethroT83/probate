@@ -48,6 +48,8 @@ Class ParseService{
 
 		$lines = self::breakLines($text);
 
+		if(count($lines) == 0){return false;}
+
 		if(count($qLine)==0){
 			$a = 0;
 			$b = count($lines);

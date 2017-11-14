@@ -57,7 +57,11 @@ class AuthController extends Controller{
 
 			return response()->json(['failed_to_create_token'], 500);
 		}
-			
+
 		return response()->json(compact('token'));
+	}
+
+	public function halt(){
+		header('HTTP/1.0 403 Forbidden');
 	}
 }

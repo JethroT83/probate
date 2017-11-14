@@ -158,7 +158,7 @@ Class RunService{
 				'deceased_address'	=> $info['DecdLastAddress'],
 				'deceased_city'		=> $info['DecdLastCity'],
 				'deceased_state'	=> $info['DecdLastState'],
-				'deceased_zip'		=> $info['DecdLastState'],
+				'deceased_zip'		=> $info['DecdLastZip'],
 				'probate_name'		=> $info['PRFullNamePulled'],
 				'probate_address'	=> $info['PRAddress'],
 				'probate_city'		=> $info['PRCity'],

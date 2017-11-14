@@ -16,7 +16,7 @@ class UploadController extends Controller
 	public function get(){
 
 		return DB::table('files')
-				->select('local_name','frontend_name','ran','upload_time','ran_time')
+				->select('id','local_name','frontend_name','ran','upload_time','ran_time')
 				->where('delete',0)
 				->get();
 	}

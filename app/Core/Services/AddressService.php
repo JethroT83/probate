@@ -136,8 +136,8 @@ class AddressService{
 			$result['street'] = trim($e[0]);
 			$result['city']   = trim($e[1]);
 			$result['state']  = $ee[0];
-			$result['zip']    = $ee[1];
-			$result['country']= trim($e[3]);
+			$result['zip']    = isset($ee[1]) ? $ee[1] : -1;
+			$result['country']= isset($ee[3]) ? trim($e[3]):-1;
 
 			return $result;
 		}else{
@@ -392,7 +392,7 @@ class AddressService{
 
 				// Use Google if the streets names are off
 				// or count of the words in the street name are different
-				if($pe[1] != $ge[1] //|| //any pe word in google city name
+				if(isset($pe[1]) && $pe[1] != $ge[1] //|| //any pe word in google city name
 				 /*count($pe) != count($ge)*/ ){
 					return $googleAddress;
 				}else{

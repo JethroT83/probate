@@ -14,16 +14,16 @@ class A_BreakPDF implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $file;
+    protected $fileID;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($file)
+    public function __construct(int $fileID)
     {
-        $this->file = $file;
+        $this->fileID = $fileID;
     }
 
     /**
@@ -33,7 +33,7 @@ class A_BreakPDF implements ShouldQueue
      */
     public function handle(){
         
-        $PDF = new BreakPDF($this->file);
+        $PDF = new BreakPDF($this->fileID);
         $PDF->handle();
     }
 }

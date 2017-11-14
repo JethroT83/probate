@@ -14,16 +14,16 @@ class C_ParseText implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $file;
+    protected $fileID;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($file)
+    public function __construct(int $fileID)
     {
-        $this->file = $file;
+        $this->fileID = $fileID;
     }
 
     /**
@@ -33,7 +33,7 @@ class C_ParseText implements ShouldQueue
      */
     public function handle()
     {
-        $T = new pText($this->file);
+        $T = new pText($this->fileID);
         return $T->handle();
     }
 }

@@ -8,11 +8,13 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-use App\Http\Controllers\JobControllers\CleanUp;
-class D_CleanUp implements ShouldQueue
+use Illuminate\Http\Request;
+
+use App\Http\Controllers\JobControllers\ReportReady;
+class E_Email implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+    
     protected $fileID;
 
     /**
@@ -25,14 +27,15 @@ class D_CleanUp implements ShouldQueue
         $this->fileID = $fileID;
     }
 
+
     /**
      * Execute the job.
      *
      * @return void
      */
-    public function handle()
+    public function handle(Request $request)
     {
-        $C = new CleanUp($this->fileID);
-        $C->handle();
+        $E = new ReportReady($this->fileID);
+        $E->mail($request);
     }
 }
