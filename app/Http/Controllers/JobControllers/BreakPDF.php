@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache as Cache;
 use App\Core\Services\RunService as Run;
 
+
 class BreakPDF extends Controller{
 
 	public function __construct(int $fileID){	

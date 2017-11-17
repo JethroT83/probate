@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
 use App\Http\Controllers\JobControllers\BreakPDF;
-
+use App\Http\Controllers\JobControllers\Notification;
 class A_BreakPDF implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -35,5 +35,8 @@ class A_BreakPDF implements ShouldQueue
         
         $PDF = new BreakPDF($this->fileID);
         $PDF->handle();
+
+        $E = new Notification($this->fileID);
+        $E->updateEnd();
     }
 }

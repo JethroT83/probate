@@ -10,19 +10,20 @@ use Illuminate\Foundation\Bus\Dispatchable;
 
 use Illuminate\Http\Request;
 
-use App\Http\Controllers\JobControllers\ReportReady;
-class E_Email implements ShouldQueue
+use App\Http\Controllers\JobControllers\Notification;
+class E_Notification implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     
     protected $fileID;
+    protected $fileInfo;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(int $fileID)
+    public function __construct($fileID)
     {
         $this->fileID = $fileID;
     }
@@ -35,7 +36,8 @@ class E_Email implements ShouldQueue
      */
     public function handle(Request $request)
     {
-        $E = new ReportReady($this->fileID);
+        $E = new Notification($this->fileID);
         $E->mail($request);
+        $E->updateEnd();
     }
 }

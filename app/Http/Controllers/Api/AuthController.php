@@ -42,13 +42,12 @@ class AuthController extends Controller{
 
 		// get user credentials: email, password
 		$credentials = $request->only('email', 'password');
-
 		$token = null;
 
 		try {
 
 			$token = $this->jwtauth->attempt($credentials);
-			
+
 			if (!$token) {
 				return response()->json(['invalid_email_or_password'], 422);
 			}
@@ -59,9 +58,5 @@ class AuthController extends Controller{
 		}
 
 		return response()->json(compact('token'));
-	}
-
-	public function halt(){
-		header('HTTP/1.0 403 Forbidden');
 	}
 }

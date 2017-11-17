@@ -43,40 +43,10 @@ class B_ConvertToText implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
-    {
+    public function handle(){
+
         $T = new cText($this->page);
         $T->handle();
-
-        // Get the Number of Pages
-        /*$pageCount = Run::getPageCount($this->file);
-
-        $promises = [];
-        for($page=1;$page<=$pageCount;$page++){
-
-            //push to queue
-            array_push($promises,dispatch(new cText($page)));
-
-        }
-
-        //Iterate through promises
-        $each = new EachPromise($promises, [
-            'fulfilled' => function ($value, $id, Promise $aggregate) use (&$called) {
-                $aggregate->resolve(null);
-            },
-            'rejected' => function (\Exception $reason) {
-                echo $reason->getMessage();
-            }
-        ]);
-
-        foreach($each->promise() as $i => $prom){
-          $prom->resolve();
-        }
-
-        /*$called = false;
-        $each->promise()->then(function () use (&$called) {
-            $called = true;
-        });*/
 
     }
 }

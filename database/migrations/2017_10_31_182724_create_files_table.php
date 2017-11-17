@@ -15,6 +15,7 @@ class CreateFilesTable extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id');
             $table->string('local_name',44);
             $table->string('frontend_name',20);
             $table->boolean('ran')->default(0);

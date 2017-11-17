@@ -2,21 +2,19 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-#use App\Http\Requests\LoginRequest;
 
 ############################ RUN ##########################
 use App\Jobs\A_BreakPDF;
 use App\Jobs\B_ConvertToText;
 use App\Jobs\C_ParseText;
 use App\Jobs\D_CleanUp;
-use App\Jobs\E_Email;
+use App\Jobs\E_Notification;
 use Carbon\Carbon;
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Promise\EachPromise;
 
 use Illuminate\Support\Facades\Cache as Cache;
 use App\Core\Services\RunService as Run;
-use App\Http\Controllers\JobControllers\ConvertToText as cText;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -33,20 +31,23 @@ Route::group([
     'namespace' => 'Api'
   ], function () {
 
-      Route::post('/auth/register', [
-        'as' => 'auth.register',
-        'uses' => 'AuthController@register'
-      ]);
+      # ADMIN ONLY
+      #Route::post('/auth/register', [
+      #  'as' => 'auth.register',
+      #  'uses' => 'AuthController@register'
+      #])
 
       Route::post('/auth/login', [
         'as' => 'auth.login',
         'uses' => 'AuthController@login'
       ]);
 
+
       Route::post('/upload', [
         'as'=>'upload',
         'uses' => 'UploadController@store'
-      ]);
+      ])->middleware('jwt.auth');
+
 
       Route::get('/download/{fileID}',function(Request $request){
         
@@ -54,56 +55,81 @@ Route::group([
         $D        = new \App\Http\Controllers\Api\DownloadController($fileID);
 
         return    $D->handle();
-      });
+      })->middleware('jwt.auth');
 
-      Route::get('/files','UploadController@get');
+
+      Route::get('/files',function(Request $request){
+
+        $U = new \App\Http\Controllers\Api\UploadController($request);
+        return $U->get();
+
+      })->middleware('jwt.auth');
 
 
       Route::get('/run/{fileID}',function(Request $request){
 
+
+
+        ############## INFO ##############
+
         $fileID   = $request->fileID;
+        
+        // Cacche File
         Run::cacheFile($fileID);
+        
+        // Get File Name
         $file = Cache::get('file');
 
-        //Break PDF into pages
-        $job1 = (new A_BreakPDF($fileID));
+        //Get Fronend Name
+        $fileInfo = Cache::get('file_info');
 
-        $p1 = new Promise(dispatch($job1), 
-                          function () 
-                          use (&$called) { $called = true; });
-        $p1->then(function () {
-
-          // Get the Number of Pages
-          $pageCount = Run::getPageCount($file);
-
-          $promises = [];
-          for($page=1;$page<=$pageCount;$page++){
-
-            //push to queue
-            array_push($promises,dispatch((new B_ConvertToText($fileID, $page))));
-
-          }
-
-          array_push($promises, dispatch((new C_ParseText($fileID))));
-          array_push($promises, dispatch((new D_CleanUp($fileID))));
-          //array_push($promises, dispatch((new E_Email($fileID))));
+        // Get Page Count
+        $pageCount = Run::getPageCount($file);
 
 
-          $each = new EachPromise($promises, [
-              'fulfilled' => function ($value, $id, Promise $aggregate) use (&$called) {
-                  $aggregate->resolve(null);
-              },
-              'rejected' => function (\Exception $reason) {
-                  echo $reason->getMessage();
-              }
-          ]);
 
-          foreach($each->promise() as $i => $prom){
-            $prom->resolve();
-            $prom->wait();
-          }
-        });
-      });
+        ############# PROMISES #############
+
+        ## A Break PDF into pages ##
+        array_push($promises, dispatch((new A_BreakPDF($fileID))));
+
+        ## B Convert Into Text ##
+        $promises = [];
+        for($page=1;$page<=$pageCount;$page++){
+
+          //push to queue
+          array_push($promises,dispatch((new B_ConvertToText($fileID, $page))));
+
+        }
+
+        ## C Parse Text ##
+        array_push($promises, dispatch((new C_ParseText($fileID))));
+        
+        ## D Clean Up
+        array_push($promises, dispatch((new D_CleanUp($fileID))));
+        
+        ## E Email ##
+        array_push($promises, dispatch((new E_Notification($fileID))));
+
+
+
+        ########### RUN PROMISES ###########
+
+        $each = new EachPromise($promises, [
+            'fulfilled' => function ($value, $id, Promise $aggregate) use (&$called) {
+                $aggregate->resolve(null);
+            },
+            'rejected' => function (\Exception $reason) {
+                echo $reason->getMessage();
+            }
+        ]);
+
+        foreach($each->promise() as $i => $prom){
+          $prom->resolve();
+          $prom->wait();
+        }
+
+      })->middleware('jwt.auth');
 
 
       Route::get('/email/{fileID}',function(Request $request){
@@ -111,7 +137,15 @@ Route::group([
 
           $E = new E_Email($fileID);
           $E->handle();
-      });
-});
+      })->middleware('jwt.auth');
 
-Route::post('login', [ 'as' => 'login', 'uses' => 'AuthController@halt']);
+
+      Route::post('/delete/{fileID}',function(Request $request){
+
+          $fileID = $request->fileID;
+
+          $D       = new \App\Http\Controllers\Api\DownloadController($fileID);
+          $D->delete();
+      })->middleware('jwt.auth');
+
+});
