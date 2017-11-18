@@ -42,11 +42,14 @@ Route::group([
         'uses' => 'AuthController@login'
       ]);
 
+      Route::post('/upload', function(Request $request){
 
-      Route::post('/upload', [
-        'as'=>'upload',
-        'uses' => 'UploadController@store'
-      ])->middleware('jwt.auth');
+        $U = new \App\Http\Controllers\Api\UploadController($request);
+        $U->store();
+
+        echo true;//Something must be returned or frontend will throw an error
+        
+      })->middleware('jwt.auth');
 
 
       Route::get('/download/{fileID}',function(Request $request){
@@ -55,6 +58,7 @@ Route::group([
         $D        = new \App\Http\Controllers\Api\DownloadController($fileID);
 
         return    $D->handle();
+
       })->middleware('jwt.auth');
 
 
@@ -129,23 +133,20 @@ Route::group([
           $prom->wait();
         }
 
-      })->middleware('jwt.auth');
+        echo true;//Something must be returned or frontend will throw an error
 
-
-      Route::get('/email/{fileID}',function(Request $request){
-          $fileID = $request->fileID;
-
-          $E = new E_Email($fileID);
-          $E->handle();
       })->middleware('jwt.auth');
 
 
       Route::post('/delete/{fileID}',function(Request $request){
 
-          $fileID = $request->fileID;
+        $fileID = $request->fileID;
 
-          $D       = new \App\Http\Controllers\Api\DownloadController($fileID);
-          $D->delete();
+        $D       = new \App\Http\Controllers\Api\DownloadController($fileID);
+        $D->delete();
+
+        echo true;//Something must be returned or frontend will throw an error
+
       })->middleware('jwt.auth');
 
 });

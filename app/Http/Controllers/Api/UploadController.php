@@ -14,8 +14,10 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class UploadController extends Controller
 {
 	private $user;
+	private $request;
 
 	public function __construct(Request $request){
+		$this->request = $request;
 		$this->user = $request->user();
 	}
 
@@ -43,10 +45,10 @@ class UploadController extends Controller
 	}
 
 
-	public function store(Request $request){
+	public function store(){
 
-		$frontend_name 	= $request->file('file')->getClientOriginalName();
-		$response 		= $request->file('file')->store('uploads','local');
+		$frontend_name 	= $this->request->file('file')->getClientOriginalName();
+		$response 		= $this->request->file('file')->store('uploads','local');
 		
 		$e = explode("/",$response);
 		$local_name = end($e);
