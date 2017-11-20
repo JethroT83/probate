@@ -7,6 +7,24 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 </p>
 
+## Deploying
+
+--code--
+git clone repo
+composer update
+
+--env--
+touch .env.production 
+change the DB_USER and DB_PASSWORD credentials
+php artisan config:cache --env=production
+
+--config--
+Go to root directory
+touch index.php
+add to index.php:
+<?php include('server.php');
+
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
