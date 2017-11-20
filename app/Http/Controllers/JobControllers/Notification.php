@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache as Cache;
+use App\Core\Services\RunService as Run;
+
 class Notification extends Controller{
 
 	public $fileID;
@@ -20,14 +23,14 @@ class Notification extends Controller{
 	}
 
 
-	public function mail(Request $request){
-
+	public function mail($user){
+echo json_encode($user);
 		### CACHE FILE ###
 		Run::cacheFile($this->fileID);
 
-		$fileInfo = Cache::get('file');
-
-		Mail::to($request->user())->send(new Email($fileInfo->frontend_name));
+		$fileInfo = Cache::get('file_info');
+echo json_encode($user);
+		Mail::to($user)->send(new Email($fileInfo->frontend_name));
 	}
 
 	public function updateStart(){

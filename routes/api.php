@@ -93,12 +93,12 @@ Route::group([
 
 
         ############# PROMISES #############
+        $promises = [];
 
         ## A Break PDF into pages ##
         array_push($promises, dispatch((new A_BreakPDF($fileID))));
 
         ## B Convert Into Text ##
-        $promises = [];
         for($page=1;$page<=$pageCount;$page++){
 
           //push to queue
@@ -113,8 +113,8 @@ Route::group([
         array_push($promises, dispatch((new D_CleanUp($fileID))));
         
         ## E Email ##
-        array_push($promises, dispatch((new E_Notification($fileID))));
-
+        $user = $request->user();
+        array_push($promises, dispatch((new E_Notification($user, $fileID))));
 
 
         ########### RUN PROMISES ###########

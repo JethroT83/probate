@@ -16,16 +16,17 @@ class E_Notification implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     
     protected $fileID;
-    protected $fileInfo;
+    protected $user;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($fileID)
+    public function __construct($user, $fileID)
     {
         $this->fileID = $fileID;
+        $this->user = $user;
     }
 
 
@@ -34,10 +35,11 @@ class E_Notification implements ShouldQueue
      *
      * @return void
      */
-    public function handle(Request $request)
+    public function handle()
     {
         $E = new Notification($this->fileID);
-        $E->mail($request);
+
+        $E->mail($this->user);
         $E->updateEnd();
     }
 }
