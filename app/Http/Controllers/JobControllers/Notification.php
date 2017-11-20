@@ -24,12 +24,12 @@ class Notification extends Controller{
 
 
 	public function mail($user){
-echo json_encode($user);
+
 		### CACHE FILE ###
 		Run::cacheFile($this->fileID);
 
 		$fileInfo = Cache::get('file_info');
-echo json_encode($user);
+
 		Mail::to($user)->send(new Email($fileInfo->frontend_name));
 	}
 
